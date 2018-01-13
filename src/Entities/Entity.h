@@ -22,6 +22,6 @@ public:
 
 	bool isColliding[4]; // 0) left, 1) bottom, 2) right, 3) top
 	float speedMAX = 10;
-	float gravity = 0.18f;
+	float gravity = 0.8f;
 	sf::Vector2f velocity = { 0, 0 };
 };

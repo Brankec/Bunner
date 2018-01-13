@@ -10,13 +10,14 @@ public:
 
 public:
 	void playerUpdate();
-	void setPos(float collisionPos);
+	void setPos();
 	void animation();
 	float Lerp(float x, float y, float z);
 	void playerControl();
 
+	//Collision GetCollision() { return Collision(entityRec); }
+
 private:
 	bool isJumping = false;
-	//bool isColliding[4]; // 0) left, 1) bottom, 2) right, 3) top
 };
 

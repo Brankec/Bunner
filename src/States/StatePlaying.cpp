@@ -19,7 +19,6 @@ void StatePlaying::handleInput()
 
 void StatePlaying::update(sf::Time deltaTime)
 {
-	//std::cout << isColliding[0] << std::endl;
 	player.playerUpdate();
 	Camera::followPlayerSmooth(player.getPos(), deltaTime.asSeconds());
 }
@@ -31,9 +30,9 @@ void StatePlaying::fixedUpdate(sf::Time deltaTime)
 
 void StatePlaying::render(sf::RenderTarget& renderer)
 {
-	renderer.setView(Camera::getView());
-
+	renderer.setView(Camera::getView({10.f, 1.f})); //background scroll
 	map.drawBackGround(renderer); //Background
+	map.drawForeGround(renderer, player); //Foreground
 	renderer.draw(player.entityRec);
-	map.drawForeGround(renderer, player, player.isColliding); //Foreground
+	renderer.setView(renderer.getDefaultView());
 }

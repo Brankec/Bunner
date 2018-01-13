@@ -4,38 +4,63 @@
 
 Player::Player()
 {
-	entityRec.setSize({ 50,50 });
+	entityRec.setSize({ 25,50 });
 	entityRec.setPosition(0, 400);
+	//entityRec.setOrigin(entityRec.getSize().x / 2, entityRec.getSize().y / 2);
 	loadTextureToRec();
 	entityRec.setTextureRect(sf::IntRect(8, 209, 7, 10));
 }
 
 void Player::playerUpdate()
 {
-	setPos(390);
+	setPos();
 }
 
-void Player::setPos(float collisionPos)
+void Player::setPos()
 {
-	/*if (!isColliding)
+	if (velocity.y < 0)
 	{
-		isJumping = false;
-		//velocity.y = velocity.y + gravity;
 	}
 	else
 	{
-		velocity.y = 0;
-
 		isJumping = false;
-
-		entityRec.setPosition({ getPos().x, collisionPos });
-	}*/
-	if (isColliding[0])
+	}
+	/*if (isColliding[0])
 	{
 		//entityRec.move(10, 0);
 		std::cout << "Colliding left" << std::endl;
-	}
 
+		//entityRec.move(-velocity.x, 0);
+		//velocity.x = 0;
+	}
+	if (isColliding[1])
+	{
+		//entityRec.move(10, 0);
+		std::cout << "Colliding right" << std::endl;
+
+		//entityRec.move(-velocity.x, 0);
+		//velocity.x = 0;
+	}
+	if (isColliding[2])
+	{
+		//entityRec.move(10, 0);
+		//velocity.x = 0;
+		std::cout << "Colliding top" << std::endl;
+
+		//entityRec.move(0, -velocity.y);
+		//velocity.y = 0;
+	}
+	if (isColliding[3])
+	{
+		//entityRec.move(10, 0);
+		std::cout << "Colliding bottom" << std::endl;
+
+		//entityRec.move(0, -velocity.y);
+		//velocity.y = 0;
+	}*/
+
+
+	velocity.y += gravity;
 	entityRec.move(velocity.x, velocity.y);
 }
 
@@ -55,12 +80,12 @@ void Player::playerControl()
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
 	{
 		velocity.x = Lerp(velocity.x, 6, 0.05f); //1) current speed ,2) max speed, 3)acceleration speed
-		//velocity.x = 5;
+		//velocity.x = 2;
 	}
 	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
 	{
 		velocity.x = Lerp(velocity.x, -6, 0.05f);
-		//velocity.x = -5;
+		//velocity.x = -2;
 	}
 	else
 	{
@@ -68,6 +93,7 @@ void Player::playerControl()
 
 		if(abs(velocity.x) < 0.3f)
 			velocity.x = round(velocity.x);
+		//velocity.x = 0;
 	}
 	//Y axis
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && isJumping == false)
@@ -75,6 +101,8 @@ void Player::playerControl()
 		isJumping = true;
 		velocity.y = -22;
 	}
+
+
 	/*if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
 	{
 		velocity.y = -5;

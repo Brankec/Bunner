@@ -44,7 +44,7 @@ void Game::run()
         }
 
         //Render
-        m_window.clear();
+        m_window.clear(sf::Color(70,85,57));
         state.render(m_window);
         counter.draw(m_window);
         m_window.display();

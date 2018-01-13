@@ -17,9 +17,10 @@ public:
 public:
 	void loadTilesForeground();
 	void loadTilesBackground();
-	void drawForeGround(sf::RenderTarget& renderer, Player& player, bool(&isColliding)[4]);
+	void drawForeGround(sf::RenderTarget& renderer, Player& player);
 	void drawBackGround(sf::RenderTarget& renderer);
 	void setOriginCenter();
+	void tileCollision(Player& player, bool(&isColliding)[4]);
 	sf::Vector2i Sprite_sheet_coordinates(int tileIndex);
 
 
@@ -34,9 +35,12 @@ public:
 	sf::Vector2i loadCounter;
 	sf::Vector2i tileSize;
 	int amountOfTiles;
+	void Collision(Player &player);
 
 	//open the file containing the tile name and tile positions
 	std::ifstream openfileForeground;
 	std::ifstream openfileBackground;
+
+	//Collision GetCollision() { return Collision(tile[0]); }
 };
 

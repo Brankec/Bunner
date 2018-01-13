@@ -7,6 +7,7 @@ Map::Map(std::string fileNameFore, std::string fileNameBack, int n, int amountOf
 	this->powOfN = (int)pow(2, n);
 	this->amountOfTiles = amountOfTiles;
 	this->tileSize = tileSize;
+	//setOriginCenter();
 	loadTilesForeground();
 	loadTilesBackground();
 	//setOriginCenter();
@@ -72,7 +73,7 @@ void Map::loadTilesBackground()
 	}
 }
 
-void Map::drawForeGround(sf::RenderTarget& renderer, Player& player, bool (&isColliding)[4])
+void Map::drawForeGround(sf::RenderTarget& renderer, Player& player)
 {
 	for (int i = 0; i < mapForeGround.size(); i++)
 	{
@@ -83,46 +84,7 @@ void Map::drawForeGround(sf::RenderTarget& renderer, Player& player, bool (&isCo
 				tile[0].setPosition(j * (float)powOfN, i * (float)powOfN);
 				tile[0].setTextureRect(sf::IntRect(mapForeGround[i][j].x, mapForeGround[i][j].y, tileSize.x, tileSize.y)); //map[i][j] holds coordinates/size of that index, not the index itself
 
-				static sf::FloatRect collisionBound;
-				collisionBound.left = tile[0].getGlobalBounds().left - 1;
-				collisionBound.height = tile[0].getGlobalBounds().height + 1;
-				collisionBound.width = tile[0].getGlobalBounds().width + 1;
-				collisionBound.top = tile[0].getGlobalBounds().top - 1;
-
-				if (player.getAABB().intersects(collisionBound))
-				{
-					if (player.velocity.x < 0 && player.getPos().x < tile[0].getPosition().x + tile[0].getGlobalBounds().width)
-					{
-						//std::cout << "Touched left side" << std::endl;
-						isColliding[0] = true;
-					}
-					else
-						isColliding[0] = false;
-
-					if (player.velocity.y > 0 && player.getPos().y >= tile[0].getPosition().y)
-					{
-						//std::cout << "Touched Bottom" << std::endl;
-						isColliding[1] = true;
-					}
-					else
-						isColliding[1] = false;
-					
-					if (player.velocity.x > 0 && player.getPos().x + player.getAABB().width >= tile[0].getPosition().x)
-					{
-						//std::cout << "Touched right Side" << std::endl;
-						isColliding[2] = true;
-					}
-					else
-						isColliding[2] = false;
-
-					if (player.velocity.y < 0 && player.getPos().y <= tile[0].getPosition().y)
-					{
-						//std::cout << "Touched Top" << std::endl;
-						isColliding[3] = true;
-					}
-					else
-						isColliding[3] = false;
-				}
+				Collision(player);
 
 				renderer.draw(tile[0]);
 			}
@@ -170,4 +132,66 @@ sf::Vector2i Map::Sprite_sheet_coordinates(int tileIndex)
 	}*/
 }
 
+void Map::Collision(Player &player)
+{
+	float PlayerLeft = player.entityRec.getPosition().x;
+	float PlayerRight = player.entityRec.getPosition().x + 25;
+	float PlayerTop = player.entityRec.getPosition().y;
+	float PlayerBottom = player.entityRec.getPosition().y + 50;
 
+	float BlockLeft = tile[0].getPosition().x;
+	float BlockRight = tile[0].getPosition().x + tile[0].getSize().x;
+	float BlockTop = tile[0].getPosition().y;
+	float BlockBottom = tile[0].getPosition().y + tile[0].getSize().y;
+
+	if (PlayerRight > BlockLeft - 5 && 
+		PlayerLeft < BlockRight + 5 && 
+		PlayerBottom > BlockTop + 5 && 
+		PlayerTop < BlockBottom - 5)
+	{
+		if (PlayerRight >= BlockLeft && PlayerLeft <= BlockLeft)  //Left side of the Block
+		{
+			player.isColliding[0] = true;
+			player.entityRec.move(-player.velocity.x, 0);
+			player.velocity.x = 0;
+		}
+		else
+			player.isColliding[0] = false;
+
+		if (PlayerLeft <= BlockRight && PlayerRight >= BlockRight)   //Right side of the block
+		{
+			player.isColliding[1] = true;
+			player.entityRec.move(-player.velocity.x, 0);
+			player.velocity.x = 0;
+		}
+		else
+			player.isColliding[1] = false;
+
+	}
+	if (PlayerRight > BlockLeft + 5 && 
+		PlayerLeft < BlockRight - 5 && 
+		PlayerBottom > BlockTop - 5 && 
+		PlayerTop < BlockBottom + 5)
+	{
+		if (PlayerTop < BlockBottom && PlayerBottom > BlockBottom)    //Bottom side of the block
+		{
+			player.isColliding[2] = true;
+			player.entityRec.move(0, -player.velocity.y);
+			player.velocity.y = 0;
+		}
+		else
+		{
+			player.isColliding[2] = false;
+		}
+
+		if (PlayerBottom > BlockTop && PlayerTop < BlockTop)    //Top side of the block
+		{
+			player.isColliding[3] = true;
+			player.entityRec.move(0, -player.velocity.y);
+			player.velocity.y = 0;
+		}
+		else
+			player.isColliding[3] = false;
+		
+	}
+}
