@@ -11,9 +11,9 @@ Features:
 - very basic and buggy AABB Collision(The player sometimes gets stuck a little when jumping on the edge but eventually gets pushed back)
 - basic 2D platformer movements with a simple Lerp acceleration and deceleration
 - supports 3 layers of drawing. Background, Main(aka player layer), Foreground. Background and Foreground are used for decorations
+- player animation 
 
 
 Upcoming features:
-- player animation
 - optimized drawing
 - bullet/projectile class
