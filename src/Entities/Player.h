@@ -1,6 +1,7 @@
 #include <SFML\Graphics.hpp>
 #include "Entity.h"
 #include <iostream>
+#include <algorithm>
 
 #pragma once
 class Player : public Entity
@@ -9,15 +10,19 @@ public:
 	Player();
 
 public:
-	void playerUpdate();
+	void loadPlayerAnimation();
+	void playerUpdate(float deltaTime);
 	void setPos();
-	void animation();
 	float Lerp(float x, float y, float z);
 	void playerControl();
+	void playerAnimation();
 
 	//Collision GetCollision() { return Collision(entityRec); }
 
 private:
 	bool isJumping = false;
+	sf::IntRect playerFrame[12][2];
+	sf::Vector2u frameStage = { 0,0 };
+	float frameDelay = 0;
 };
 

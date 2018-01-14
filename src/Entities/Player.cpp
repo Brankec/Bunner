@@ -8,70 +8,60 @@ Player::Player()
 	entityRec.setPosition(0, 400);
 	entityRec.setOrigin(entityRec.getSize().x / 2, entityRec.getSize().y / 2);
 	loadTextureToRec();
-	entityRec.setTextureRect(sf::IntRect(8, 209, 7, 10));
+	loadPlayerAnimation();
+	entityRec.setTextureRect(sf::IntRect(0, 0, 7, 11));
 
-	speedMAX = 4;
+	speedMAX = 3;
+
+	//gravity = 0.1;  for testing purposes
 }
 
-void Player::playerUpdate()
+void Player::loadPlayerAnimation()
+{
+    //Idle stage
+	playerFrame[0][0] = { 9, 0, 7, 11 }; 
+
+	//Jump stage
+	playerFrame[1][0] = { 8, 48, 7, 11 };
+
+	//Fall stage
+	playerFrame[2][0] = { 8, 64, 7, 11 };
+
+    //moving stage
+	playerFrame[0][1] = { 8, 17, 7,   10 }; 
+	playerFrame[1][1] = { 24, 17, 7,  10 };
+	playerFrame[2][1] = { 41, 16, 7,  11 };
+	playerFrame[3][1] = { 58, 16, 7,  11 };
+	playerFrame[4][1] = { 73, 16, 7,  11 };
+	playerFrame[5][1] = { 88, 16, 7,  10 };
+	playerFrame[6][1] = { 104, 17, 7,  10 };
+	playerFrame[7][1] = { 120, 17, 7,  10 };
+	playerFrame[8][1] = { 138, 16, 7,  11 };
+	playerFrame[9][1] = { 154, 16, 7,  11 };
+	playerFrame[10][1] = { 169, 16, 7, 11 };
+	playerFrame[11][1] = { 184, 16, 7, 10 };
+}
+
+void Player::playerUpdate(float deltaTime)
 {
 	setPos();
+
+	playerAnimation();
+	frameDelay += deltaTime;	
 }
 
 void Player::setPos()
 {
-	if (velocity.y < 0)
-	{
-	}
-	else
+	if (!(velocity.y < 0))
 	{
 		isJumping = false;
 	}
-	/*if (isColliding[0])
-	{
-		//entityRec.move(10, 0);
-		std::cout << "Colliding left" << std::endl;
-
-		//entityRec.move(-velocity.x, 0);
-		//velocity.x = 0;
-	}
-	if (isColliding[1])
-	{
-		//entityRec.move(10, 0);
-		std::cout << "Colliding right" << std::endl;
-
-		//entityRec.move(-velocity.x, 0);
-		//velocity.x = 0;
-	}
-	if (isColliding[2])
-	{
-		//entityRec.move(10, 0);
-		//velocity.x = 0;
-		std::cout << "Colliding top" << std::endl;
-
-		//entityRec.move(0, -velocity.y);
-		//velocity.y = 0;
-	}
-	if (isColliding[3])
-	{
-		//entityRec.move(10, 0);
-		std::cout << "Colliding bottom" << std::endl;
-
-		//entityRec.move(0, -velocity.y);
-		//velocity.y = 0;
-	}*/
-
 
 	velocity.y += gravity;
 	entityRec.move(velocity.x, velocity.y);
 }
 
-void Player::animation()
-{
-	//entityRec.setTextureRect(sf::IntRect(5, 5, 6, 4));  //5,5,6,4
-}
-
-float Player::Lerp(float x, float y, float z) //acceleration or deacceleration
+float Player::Lerp(float x, float y, float z) //acceleration or deceleration
 {
 	return ((1.0f - z) * x) + (z * y);
 }
@@ -82,41 +72,75 @@ void Player::playerControl()
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
 	{
 		velocity.x = Lerp(velocity.x, speedMAX, 0.05f); //1) current speed ,2) max speed, 3)acceleration speed
-		entityRec.setScale(1, 1);
-		//velocity.x = 2;
+		entityRec.setScale(1, 1); //for turning right
+
+		if (frameStage.x < 10)
+		{
+			if (frameDelay > 0.25f / abs(velocity.x))
+			{
+				frameStage.x++;
+				frameDelay = 0;
+			}
+		}
+		else
+			frameStage.x = 0;
 	}
 	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
 	{
 		velocity.x = Lerp(velocity.x, -speedMAX, 0.05f);
-		entityRec.setScale(-1, 1);
-		//velocity.x = -2;
+		entityRec.setScale(-1, 1); //for turning left
+
+		if (frameStage.x < 10)
+		{
+			if (frameDelay > 0.25f / abs(velocity.x))
+			{
+				frameStage.x++;
+				frameDelay = 0;
+			}
+		}
+		else
+			frameStage.x = 0;
 	}
 	else
 	{
+		frameStage.x = 0;
 		velocity.x = Lerp(velocity.x, 0, 0.1f); 
+
+		//if(abs(velocity.x) != 0)
 
 		if(abs(velocity.x) < 0.3f)
 			velocity.x = round(velocity.x);
-		//velocity.x = 0;
 	}
 	//Y axis
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && isJumping == false)
 	{
 		isJumping = true;
-		velocity.y = -22;
+		velocity.y = -20;
 	}
+}
 
-
-	/*if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
+void Player::playerAnimation()
+{
+	if (velocity.x == 0)
 	{
-		velocity.y = -5;
-	}
-	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
-	{
-		velocity.y = 5;
+		entityRec.setTextureRect(playerFrame[0][0]); // stand still
 	}
 	else
-		velocity.y = 0;*/
+	{
+		entityRec.setTextureRect(playerFrame[frameStage.x][1]); //run
+	}
+
+	
+	if (velocity.y < 0)
+	{
+		entityRec.setTextureRect(playerFrame[1][0]); // jump
+	}
+
+	if (velocity.y > 0.81)
+	{
+		entityRec.setTextureRect(playerFrame[2][0]); // fall
+	}
+	
 }
 
 

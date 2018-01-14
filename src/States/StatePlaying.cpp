@@ -19,7 +19,7 @@ void StatePlaying::handleInput()
 
 void StatePlaying::update(sf::Time deltaTime)
 {
-	player.playerUpdate();
+	player.playerUpdate(deltaTime.asSeconds());
 	Camera::followPlayerSmooth(player.getPos(), deltaTime.asSeconds());
 }
 

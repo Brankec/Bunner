@@ -6,7 +6,7 @@ class Entity
 {
 public:
 	Entity();
-	void loadTextureToRec(std::string textureName = "entities");
+	void loadTextureToRec(std::string textureName = "player_all_positions");
 	void loadTextureToSpr(std::string textureName = "entities");
 	void loadAudioBuffer(std::string audioName = "placeholder");
 

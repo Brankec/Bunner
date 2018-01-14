@@ -101,7 +101,8 @@ void Map::drawMain(sf::RenderTarget & renderer, Player & player)
 			if (mapMain[i][j].x != -1 && mapMain[i][j].y != -1)
 			{
 				tile[1].setPosition(j * (float)powOfN, i * (float)powOfN);
-				tile[1].setTextureRect(sf::IntRect(mapMain[i][j].x, mapMain[i][j].y, tileSize.x, tileSize.y)); //map[i][j] holds coordinates/size of that index, not the index itself
+				tile[1].setTextureRect(sf::IntRect(mapMain[i][j].x + 1, mapMain[i][j].y + 1, tileSize.x - 2, tileSize.y - 2)); //we have to add 1 to the source and subtrack 2 from the size because of how opengl renders tiles. It causes a weird pixel gap glitch
+				//map[i][j] holds coordinates/size of that index, not the index itself
 
 				Collision(player);
 
@@ -147,15 +148,13 @@ void Map::drawBackGround(sf::RenderTarget & renderer)
 			if (mapBackGround[i][j].x != -1 && mapBackGround[i][j].y != -1)
 			{
 				tile[0].setPosition(j * (float)powOfN, i * (float)powOfN);
-				tile[0].setTextureRect(sf::IntRect(mapBackGround[i][j].x, mapBackGround[i][j].y, tileSize.x, tileSize.y)); //map[i][j] holds coordinates/size of that index, not the index itself
-																														//setTileTexture(map[i][j].y);
+				tile[0].setTextureRect(sf::IntRect(mapBackGround[i][j].x + 1, mapBackGround[i][j].y + 1, tileSize.x - 2, tileSize.y - 2)); //we have to add 1 to the source and subtrack 2 from the size because of how opengl renders tiles. It causes a weird pixel gap glitch
+
 				renderer.draw(tile[0]);
 			}
 		}
 	}
 }
-
-
 
 
 sf::Vector2i Map::Sprite_sheet_coordinates(int tileIndex)
@@ -201,22 +200,16 @@ void Map::Collision(Player &player)
 	{
 		if (PlayerRight >= BlockLeft && PlayerLeft <= BlockLeft)  //Left side of the Block
 		{
-			player.isColliding[0] = true;
 			player.entityRec.move(-0.5, 0);
 			player.velocity.x = 0;
 		}
-		else
-			player.isColliding[0] = false;
 
 		if (PlayerLeft <= BlockRight && PlayerRight >= BlockRight)   //Right side of the block
 		{
-			player.isColliding[1] = true;
 			player.entityRec.move(-player.velocity.x, 0);
 			player.entityRec.move(0.5, 0);
 			player.velocity.x = 0;
 		}
-		else
-			player.isColliding[1] = false;
 
 	}
 	if (PlayerRight > BlockLeft + 5 && 
@@ -226,25 +219,14 @@ void Map::Collision(Player &player)
 	{
 		if (PlayerTop < BlockBottom && PlayerBottom > BlockBottom)    //Bottom side of the block
 		{
-			player.isColliding[2] = true;
 			player.entityRec.move(0, -player.velocity.y);
-			//player.entityRec.move(0, 0.5);
 			player.velocity.y = 0;
-		}
-		else
-		{
-			player.isColliding[2] = false;
 		}
 
 		if (PlayerBottom > BlockTop && PlayerTop < BlockTop)    //Top side of the block
 		{
-			player.isColliding[3] = true;
 			player.entityRec.move(0, -player.velocity.y);
-			//player.entityRec.move(0, -0.5);
 			player.velocity.y = 0;
 		}
-		else
-			player.isColliding[3] = false;
-		
 	}
 }

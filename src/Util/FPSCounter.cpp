@@ -8,7 +8,10 @@ FPSCounter::FPSCounter()
     m_text.setOutlineColor (sf::Color::Black);
     m_text.setFillColor({255,255,255});
     m_text.setOutlineThickness  (2);
-    //m_text.setFont(ResourceHolder::get().fonts.get("arial"));
+
+	if (m_font.loadFromFile("res/GUI/AGENCYR.TTF"))
+		m_text.setFont(m_font);
+
     m_text.setCharacterSize(25);
 }
 

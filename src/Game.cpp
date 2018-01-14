@@ -94,3 +94,4 @@ const sf::RenderWindow& Game::getWindow() const
 {
     return m_window;
 }
+ 
