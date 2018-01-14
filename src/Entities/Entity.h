@@ -21,7 +21,7 @@ public:
 	sf::Sound entitySound;
 
 	bool isColliding[4]; // 0) left, 1) bottom, 2) right, 3) top
-	float speedMAX = 10;
+	float speedMAX = 0;
 	float gravity = 0.8f;
 	sf::Vector2f velocity = { 0, 0 };
 };

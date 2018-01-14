@@ -6,9 +6,11 @@ Player::Player()
 {
 	entityRec.setSize({ 25,50 });
 	entityRec.setPosition(0, 400);
-	//entityRec.setOrigin(entityRec.getSize().x / 2, entityRec.getSize().y / 2);
+	entityRec.setOrigin(entityRec.getSize().x / 2, entityRec.getSize().y / 2);
 	loadTextureToRec();
 	entityRec.setTextureRect(sf::IntRect(8, 209, 7, 10));
+
+	speedMAX = 4;
 }
 
 void Player::playerUpdate()
@@ -79,12 +81,14 @@ void Player::playerControl()
 	//X axis
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
 	{
-		velocity.x = Lerp(velocity.x, 6, 0.05f); //1) current speed ,2) max speed, 3)acceleration speed
+		velocity.x = Lerp(velocity.x, speedMAX, 0.05f); //1) current speed ,2) max speed, 3)acceleration speed
+		entityRec.setScale(1, 1);
 		//velocity.x = 2;
 	}
 	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
 	{
-		velocity.x = Lerp(velocity.x, -6, 0.05f);
+		velocity.x = Lerp(velocity.x, -speedMAX, 0.05f);
+		entityRec.setScale(-1, 1);
 		//velocity.x = -2;
 	}
 	else

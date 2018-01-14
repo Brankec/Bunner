@@ -3,7 +3,7 @@
 #include <iostream>
 
 StatePlaying::StatePlaying(Game& game)
-:   StateBase   (game), map("Map1_foreground", "Map1_background", 6, 8, { 32,32 })
+:   StateBase   (game), map("Map1_foreground", "Map1_main", "Map1_background", 6, 8, { 32,32 })
 {
 }
 
@@ -32,7 +32,8 @@ void StatePlaying::render(sf::RenderTarget& renderer)
 {
 	renderer.setView(Camera::getView({10.f, 1.f})); //background scroll
 	map.drawBackGround(renderer); //Background
-	map.drawForeGround(renderer, player); //Foreground
+	map.drawMain(renderer, player); //Main (player base)
+	map.drawForeGround(renderer); //Foreground
 	renderer.draw(player.entityRec);
 	renderer.setView(renderer.getDefaultView());
 }
