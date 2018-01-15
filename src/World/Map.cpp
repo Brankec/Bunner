@@ -1,4 +1,5 @@
 #include "Map.h"
+#include <string>
 
 Map::Map(std::string fileNameFore, std::string fileNameMain, std::string fileNameBack, int n, int amountOfTiles, sf::Vector2i tileSize)
 	: openfileForeground("res/Maps/" + fileNameFore + ".txt")
@@ -8,12 +9,10 @@ Map::Map(std::string fileNameFore, std::string fileNameMain, std::string fileNam
 	this->powOfN = (int)pow(2, n);
 	this->amountOfTiles = amountOfTiles;
 	this->tileSize = tileSize;
-	//setOriginCenter();
+	setOriginCenter();
 	loadTilesForeground();
 	loadTilesMain();
 	loadTilesBackground();
-	//setOriginCenter();
-
 }
 void Map::setOriginCenter()
 {
@@ -31,6 +30,8 @@ void Map::loadTilesForeground()
 
 		if (tileTexture.loadFromFile(tileLocation))
 			tile[2].setTexture(&tileTexture);
+		else
+			tile[2].setFillColor(sf::Color::Magenta);
 
 		tile[2].setSize(sf::Vector2f((float)powOfN, (float)powOfN));
 		while (openfileForeground.good())
@@ -50,19 +51,27 @@ void Map::loadTilesForeground()
 }
 void Map::drawForeGround(sf::RenderTarget& renderer)
 {
-	for (int i = 0; i < mapForeGround.size(); i++)
-	{
-		for (int j = 0; j < mapForeGround[i].size(); j++)
+	float cam_x = Camera::getView().getCenter().x;
+	int cam_x_tile = cam_x / tile[2].getSize().x + 1;
+	int Tile_row_width = (renderer.getSize().x + 500) / mapForeGround[1].size();  //increase the widith here to increase the border width
+	float cam_y = Camera::getView().getCenter().y;
+	int cam_y_tile = cam_y / tile[2].getSize().y;
+	int Tile_column_height = (renderer.getSize().y) / mapForeGround.size(); //increase the height here to increase the border height
+
+	int X_border_right = std::min((int)mapForeGround[1].size() - 1, cam_x_tile + Tile_row_width / 2);
+	int Y_border_right = std::min((int)mapForeGround.size(), cam_y_tile + Tile_column_height / 2);
+
+	for (int x = std::max(cam_x_tile - Tile_row_width / 2, 0); x < X_border_right; ++x)
+		for (int y = std::max(cam_y_tile - Tile_column_height / 2, 0); y < Y_border_right; ++y)
 		{
-			if (mapForeGround[i][j].x != -1 && mapForeGround[i][j].y != -1)
+			if (mapForeGround[y][x].x != -1 && mapForeGround[y][x].y != -1)
 			{
-				tile[2].setPosition(j * (float)powOfN, i * (float)powOfN);
-				tile[2].setTextureRect(sf::IntRect(mapForeGround[i][j].x, mapForeGround[i][j].y, tileSize.x, tileSize.y)); //map[i][j] holds coordinates/size of that index, not the index itself
+				tile[2].setPosition(x * (float)powOfN, y * (float)powOfN);
+				tile[2].setTextureRect(sf::IntRect(mapForeGround[y][x].x + 1, mapForeGround[y][x].y + 1, tileSize.x - 2, tileSize.y - 2));
 
 				renderer.draw(tile[2]);
 			}
 		}
-	}
 }
 
 
@@ -94,22 +103,29 @@ void Map::loadTilesMain()
 }
 void Map::drawMain(sf::RenderTarget & renderer, Player & player)
 {
-	for (int i = 0; i < mapMain.size(); i++)
-	{
-		for (int j = 0; j < mapMain[i].size(); j++)
+	float cam_x = Camera::getView().getCenter().x;
+	int cam_x_tile = cam_x / tile[1].getSize().x + 1;
+	int Tile_row_width = (renderer.getSize().x + 500) / mapMain[1].size();
+	float cam_y = Camera::getView().getCenter().y;
+	int cam_y_tile = cam_x / tile[1].getSize().y;
+	int Tile_column_height = renderer.getSize().y / mapMain.size();
+
+	int X_border_right = std::min((int)mapMain[1].size() - 1, (cam_x_tile)+Tile_row_width / 2);
+	int Y_border_right = std::min((int)mapMain.size(), cam_y_tile + Tile_column_height / 2);
+
+	for (int x = std::max(cam_x_tile - Tile_row_width / 2, 0); x < X_border_right; ++x)
+		for (int y = std::max(cam_y_tile - Tile_column_height / 2, 0); y < Y_border_right; ++y)
 		{
-			if (mapMain[i][j].x != -1 && mapMain[i][j].y != -1)
+			if (mapMain[y][x].x != -1 && mapMain[y][x].y != -1)
 			{
-				tile[1].setPosition(j * (float)powOfN, i * (float)powOfN);
-				tile[1].setTextureRect(sf::IntRect(mapMain[i][j].x + 1, mapMain[i][j].y + 1, tileSize.x - 2, tileSize.y - 2)); //we have to add 1 to the source and subtrack 2 from the size because of how opengl renders tiles. It causes a weird pixel gap glitch
-				//map[i][j] holds coordinates/size of that index, not the index itself
+				tile[1].setPosition(x * (float)powOfN, y * (float)powOfN);
+				tile[1].setTextureRect(sf::IntRect(mapMain[y][x].x + 1, mapMain[y][x].y + 1, tileSize.x - 2, tileSize.y - 2));
 
 				Collision(player);
 
 				renderer.draw(tile[1]);
 			}
 		}
-	}
 }
 
 
@@ -141,19 +157,26 @@ void Map::loadTilesBackground()
 }
 void Map::drawBackGround(sf::RenderTarget & renderer)
 {
-	for (int i = 0; i < mapBackGround.size(); i++)
-	{
-		for (int j = 0; j < mapBackGround[i].size(); j++)
-		{
-			if (mapBackGround[i][j].x != -1 && mapBackGround[i][j].y != -1)
-			{
-				tile[0].setPosition(j * (float)powOfN, i * (float)powOfN);
-				tile[0].setTextureRect(sf::IntRect(mapBackGround[i][j].x + 1, mapBackGround[i][j].y + 1, tileSize.x - 2, tileSize.y - 2)); //we have to add 1 to the source and subtrack 2 from the size because of how opengl renders tiles. It causes a weird pixel gap glitch
+	float cam_x = Camera::getView().getCenter().x;
+	int cam_x_tile = cam_x / tile[0].getSize().x + 1;
+	int Tile_row_width = (renderer.getSize().x + 500) / mapBackGround[0].size();
+	float cam_y = Camera::getView().getCenter().y;
+	int cam_y_tile = cam_x / tile[0].getSize().y;
+	int Tile_column_height = renderer.getSize().y / mapBackGround.size();
 
+	int X_border_right = std::min((int)mapBackGround[0].size() - 1, (cam_x_tile) + Tile_row_width / 2);
+	int Y_border_right = std::min((int)mapBackGround.size(), cam_y_tile + Tile_column_height / 2);
+
+	for (int x = std::max(cam_x_tile - Tile_row_width / 2, 0); x < X_border_right; ++x)
+		for (int y = std::max(cam_y_tile - Tile_column_height / 2, 0); y < Y_border_right; ++y)
+		{
+			if (mapBackGround[y][x].x != -1 && mapBackGround[y][x].y != -1)
+			{
+				tile[0].setPosition(x * (float)powOfN, y * (float)powOfN);
+				tile[0].setTextureRect(sf::IntRect(mapBackGround[y][x].x + 1, mapBackGround[y][x].y + 1, tileSize.x - 2, tileSize.y - 2));
 				renderer.draw(tile[0]);
 			}
 		}
-	}
 }
 
 
@@ -225,6 +248,7 @@ void Map::Collision(Player &player)
 
 		if (PlayerBottom > BlockTop && PlayerTop < BlockTop)    //Top side of the block
 		{
+			player.isJumping = false;
 			player.entityRec.move(0, -player.velocity.y);
 			player.velocity.y = 0;
 		}

@@ -7,6 +7,11 @@ sf::View Camera::getView(sf::Vector2f newCameraSpeed)
 	return view;
 }
 
+sf::FloatRect Camera::getViewPort()
+{
+	return view.getViewport();
+}
+
 void Camera::cameraZoom(sf::Event event)
 {
 	if (event.type == sf::Event::MouseWheelMoved)
@@ -20,7 +25,13 @@ void Camera::cameraZoom(sf::Event event)
 
 void Camera::followPlayerSmooth(sf::Vector2f entityPos, float deltaTime)
 {
-	camera.x += (entityPos.x - view.getCenter().x) * deltaTime * (float)cameraSpeed.x;      //smooth camera follow
-	camera.y += (entityPos.y-200 - view.getCenter().y) * deltaTime * (float)cameraSpeed.y;      //smooth camera follow
+	camera.x = Lerp(camera.x, entityPos.x, deltaTime * 3);
+	camera.y = Lerp(camera.y, entityPos.y - 100, deltaTime);
+
 	view.setCenter(camera);
+}
+
+float Camera::Lerp(float x, float y, float z) //acceleration or deceleration
+{
+	return ((1.0f - z) * x) + (z * y);
 }

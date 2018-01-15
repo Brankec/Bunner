@@ -3,7 +3,7 @@
 #include "States\StatePlaying.h"
 
 Game::Game()
-:   m_window    ({1500, 1000}, "Bunner")
+:   m_window    ({1500, 900}, "Bunner")
 {
     m_window.setFramerateLimit(100);
     pushState<StatePlaying>(*this);

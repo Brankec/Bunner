@@ -30,6 +30,8 @@ void StatePlaying::fixedUpdate(sf::Time deltaTime)
 
 void StatePlaying::render(sf::RenderTarget& renderer)
 {
+	//std::cout << Camera::getView().getCenter().x << std::endl;
+
 	renderer.setView(Camera::getView({10.f, 1.f})); //background scroll
 	map.drawBackGround(renderer); //Background
 	map.drawMain(renderer, player); //Main (player base)

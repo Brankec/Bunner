@@ -5,7 +5,7 @@
 Player::Player()
 {
 	entityRec.setSize({ 25,50 });
-	entityRec.setPosition(0, 400);
+	entityRec.setPosition(30, 400);
 	entityRec.setOrigin(entityRec.getSize().x / 2, entityRec.getSize().y / 2);
 	loadTextureToRec();
 	loadPlayerAnimation();
@@ -52,10 +52,8 @@ void Player::playerUpdate(float deltaTime)
 
 void Player::setPos()
 {
-	if (!(velocity.y < 0))
-	{
-		isJumping = false;
-	}
+	if (getPos().y > 1000)
+		entityRec.setPosition(30, 400);
 
 	velocity.y += gravity;
 	entityRec.move(velocity.x, velocity.y);
@@ -115,12 +113,17 @@ void Player::playerControl()
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && isJumping == false)
 	{
 		isJumping = true;
-		velocity.y = -20;
+		velocity.y = -16;
 	}
+
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::F))
+		entityRec.setSize({ 25, 100 });
+
 }
 
 void Player::playerAnimation()
 {
+
 	if (velocity.x == 0)
 	{
 		entityRec.setTextureRect(playerFrame[0][0]); // stand still
@@ -136,7 +139,7 @@ void Player::playerAnimation()
 		entityRec.setTextureRect(playerFrame[1][0]); // jump
 	}
 
-	if (velocity.y > 0.81)
+	else if (abs(velocity.y) > 0.81)
 	{
 		entityRec.setTextureRect(playerFrame[2][0]); // fall
 	}

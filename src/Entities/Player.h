@@ -17,10 +17,9 @@ public:
 	void playerControl();
 	void playerAnimation();
 
-	//Collision GetCollision() { return Collision(entityRec); }
+	bool isJumping = false;
 
 private:
-	bool isJumping = false;
 	sf::IntRect playerFrame[12][2];
 	sf::Vector2u frameStage = { 0,0 };
 	float frameDelay = 0;

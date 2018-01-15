@@ -1,14 +1,15 @@
 #include <SFML\Graphics.hpp>
 #include <iostream>
-#include <array>
-#include <cctype>
-#include <map>
 #include <vector>
 #include <string>
 #include <fstream>
+#include <algorithm>
+#include <cmath>
 #include "../Entities/Player.h"
+#include "../Util/Camera.h"
 
 #pragma once
+
 class Map
 {
 public:
