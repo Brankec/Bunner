@@ -24,4 +24,8 @@ public:
 	float speedMAX = 0;
 	float gravity = 0.6f;
 	sf::Vector2f velocity = { 0, 0 };
+
+protected:
+	int currentHealth = 10;
+	int maxHealth = 10;
 };

@@ -13,7 +13,7 @@ Player::Player()
 
 	speedMAX = 3;
 
-	gravity = 0.1;
+	gravity = 0.5;
 }
 
 void Player::loadPlayerAnimation()
@@ -109,6 +109,7 @@ void Player::playerControl()
 		if(abs(velocity.x) < 0.3f)
 			velocity.x = round(velocity.x);
 	}
+
 	//Y axis
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && isJumping == false)
 	{
@@ -116,8 +117,9 @@ void Player::playerControl()
 		velocity.y = -16;
 	}
 
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::F))
-		entityRec.setSize({ 25, 100 });
+	//Sprint
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift)) { speedMAX = 6; }
+	else { speedMAX = 3; }
 
 }
 
