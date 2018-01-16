@@ -13,7 +13,7 @@ Player::Player()
 
 	speedMAX = 3;
 
-	//gravity = 0.1;  for testing purposes
+	gravity = 0.1;
 }
 
 void Player::loadPlayerAnimation()

@@ -104,17 +104,17 @@ void Map::loadTilesMain()
 void Map::drawMain(sf::RenderTarget & renderer, Player & player)
 {
 	float cam_x = Camera::getView().getCenter().x;
-	int cam_x_tile = cam_x / tile[1].getSize().x + 1;
+	int cam_x_tile = cam_x / tile[1].getSize().x ;
 	int Tile_row_width = (renderer.getSize().x + 500) / mapMain[1].size();
 	float cam_y = Camera::getView().getCenter().y;
-	int cam_y_tile = cam_x / tile[1].getSize().y;
+	int cam_y_tile = cam_y / tile[1].getSize().y;
 	int Tile_column_height = renderer.getSize().y / mapMain.size();
 
-	int X_border_right = std::min((int)mapMain[1].size() - 1, (cam_x_tile)+Tile_row_width / 2);
+	int X_border_right = std::min((int)mapMain[1].size() - 1, cam_x_tile + Tile_row_width / 2);
 	int Y_border_right = std::min((int)mapMain.size(), cam_y_tile + Tile_column_height / 2);
 
-	for (int x = std::max(cam_x_tile - Tile_row_width / 2, 0); x < X_border_right; ++x)
-		for (int y = std::max(cam_y_tile - Tile_column_height / 2, 0); y < Y_border_right; ++y)
+	for (int x = std::max(cam_x_tile - Tile_row_width / 2, 0); x < X_border_right; x++)
+		for (int y = std::max(cam_y_tile - Tile_column_height / 2, 0); y < Y_border_right; y++)
 		{
 			if (mapMain[y][x].x != -1 && mapMain[y][x].y != -1)
 			{
@@ -158,10 +158,10 @@ void Map::loadTilesBackground()
 void Map::drawBackGround(sf::RenderTarget & renderer)
 {
 	float cam_x = Camera::getView().getCenter().x;
-	int cam_x_tile = cam_x / tile[0].getSize().x + 1;
+	int cam_x_tile = cam_x / tile[1].getSize().x;
 	int Tile_row_width = (renderer.getSize().x + 500) / mapBackGround[0].size();
 	float cam_y = Camera::getView().getCenter().y;
-	int cam_y_tile = cam_x / tile[0].getSize().y;
+	int cam_y_tile = cam_y / tile[1].getSize().y;
 	int Tile_column_height = renderer.getSize().y / mapBackGround.size();
 
 	int X_border_right = std::min((int)mapBackGround[0].size() - 1, (cam_x_tile) + Tile_row_width / 2);
