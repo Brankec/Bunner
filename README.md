@@ -15,5 +15,9 @@ Features:
 
 
 Upcoming features:
-- optimized drawing
 - bullet/projectile class
+- sprinting and crouching
+
+
+Possible features:
+- z depth drawing instead of painter algorithm drawing
