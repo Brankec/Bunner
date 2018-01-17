@@ -17,13 +17,12 @@ public:
 	sf::RectangleShape entityRec;
 	sf::Texture entityTex;
 	sf::Sprite entitySpr;
-	sf::SoundBuffer entityBuffer;
-	sf::Sound entitySound;
 
-	bool isColliding[4]; // 0) left, 1) bottom, 2) right, 3) top
 	float speedMAX = 0;
 	float gravity = 0.6f;
 	sf::Vector2f velocity = { 0, 0 };
+
+	int Angle;
 
 protected:
 	int currentHealth = 10;

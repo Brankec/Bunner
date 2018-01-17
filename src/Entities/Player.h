@@ -1,5 +1,6 @@
 #include <SFML\Graphics.hpp>
 #include "Entity.h"
+#include "../Weapons/mini_gun.h"
 #include <iostream>
 #include <algorithm>
 
@@ -18,10 +19,12 @@ public:
 	void playerAnimation();
 
 	bool isJumping = false;
-
+	mini_gun gun;
 private:
 	sf::IntRect playerFrame[12][2];
 	sf::Vector2u frameStage = { 0,0 };
 	float frameDelay = 0;
+
+
 };
 

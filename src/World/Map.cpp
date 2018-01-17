@@ -122,6 +122,7 @@ void Map::drawMain(sf::RenderTarget & renderer, Player & player)
 				tile[1].setTextureRect(sf::IntRect(mapMain[y][x].x + 1, mapMain[y][x].y + 1, tileSize.x - 2, tileSize.y - 2));
 
 				Collision(player);
+				ProjectileCollision(player);
 
 				renderer.draw(tile[1]);
 			}
@@ -193,14 +194,6 @@ sf::Vector2i Map::Sprite_sheet_coordinates(int tileIndex)
 
 		return coords;
 	}
-
-	/*else
-	{
-		sf::Vector2i coords;
-		coords.x = (tileIndex % 1) * 1;
-		coords.y = (tileIndex / 1) * 1;
-		return coords;
-	}*/
 }
 
 
@@ -253,4 +246,9 @@ void Map::Collision(Player &player)
 			player.velocity.y = 0;
 		}
 	}
+}
+
+void Map::ProjectileCollision(Player &player)
+{
+	player.gun.bulletHit(tile[1]);
 }

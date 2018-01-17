@@ -37,5 +37,6 @@ void StatePlaying::render(sf::RenderTarget& renderer)
 	map.drawMain(renderer, player); //Main (player base)
 	map.drawForeGround(renderer); //Foreground
 	renderer.draw(player.entityRec);
+	player.gun.draw(renderer);
 	renderer.setView(renderer.getDefaultView());
 }

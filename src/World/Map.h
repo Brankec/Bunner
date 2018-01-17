@@ -40,6 +40,7 @@ public:
 	sf::Vector2i tileSize;
 	int amountOfTiles;
 	void Collision(Player &player);
+	void ProjectileCollision(Player &player);
 
 	//open the file containing the tile name and tile positions
 	std::ifstream openfileForeground;

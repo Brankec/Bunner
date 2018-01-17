@@ -7,18 +7,19 @@ Controls:
 - D - right
 - Space - jump
 - LShift - sprint
+- LControl - shoot
 
 Features:
 - very basic AABB Collision
 - basic 2D platformer movements with a simple Lerp acceleration and deceleration
+- sprinting
 - supports 3 layers of drawing. Background, Main(aka player layer), Foreground. Background and Foreground are used for decorations
 - player animation 
-- The map only draws what you see(in the default view, not when you zoom in or out)
-- sprinting
+- the map only draws what you see(in the default view, not when you zoom in or out)
+- projectiles
 
 
 Upcoming features:
-- bullet/projectile class
 - ambient sound and player movement sound
 
 

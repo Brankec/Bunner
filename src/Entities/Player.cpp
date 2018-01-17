@@ -46,6 +46,8 @@ void Player::playerUpdate(float deltaTime)
 {
 	setPos();
 
+	gun.update(Angle, deltaTime);
+
 	playerAnimation();
 	frameDelay += deltaTime;	
 }
@@ -53,7 +55,7 @@ void Player::playerUpdate(float deltaTime)
 void Player::setPos()
 {
 	if (getPos().y > 1000)
-		entityRec.setPosition(30, 400);
+		entityRec.setPosition(30, 300);
 
 	velocity.y += gravity;
 	entityRec.move(velocity.x, velocity.y);
@@ -71,6 +73,7 @@ void Player::playerControl()
 	{
 		velocity.x = Lerp(velocity.x, speedMAX, 0.05f); //1) current speed ,2) max speed, 3)acceleration speed
 		entityRec.setScale(1, 1); //for turning right
+		Angle = 90;
 
 		if (frameStage.x < 10)
 		{
@@ -87,6 +90,7 @@ void Player::playerControl()
 	{
 		velocity.x = Lerp(velocity.x, -speedMAX, 0.05f);
 		entityRec.setScale(-1, 1); //for turning left
+		Angle = -90;
 
 		if (frameStage.x < 10)
 		{
@@ -120,6 +124,10 @@ void Player::playerControl()
 	//Sprint
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift)) { speedMAX = 6; }
 	else { speedMAX = 3; }
+
+	//fire
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::LControl))
+		gun.fire(entityRec.getPosition(), Angle);
 
 }
 

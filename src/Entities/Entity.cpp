@@ -4,10 +4,6 @@
 
 Entity::Entity()
 {
-	isColliding[0] = false;
-	isColliding[1] = false;
-	isColliding[2] = false;
-	isColliding[3] = false;
 }
 
 void Entity::loadTextureToRec(std::string textureName)
