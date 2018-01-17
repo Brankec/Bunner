@@ -13,7 +13,7 @@ Player::Player()
 
 	speedMAX = 3;
 
-	gravity = 0.5;
+	//gravity = 0.5;
 }
 
 void Player::loadPlayerAnimation()
@@ -26,6 +26,9 @@ void Player::loadPlayerAnimation()
 
 	//Fall stage
 	playerFrame[2][0] = { 8, 64, 7, 11 };
+
+	//Shoot stage
+	playerFrame[3][0] = { 8, 97, 8, 11 };
 
     //moving stage
 	playerFrame[0][1] = { 8, 17, 7,   10 }; 
@@ -122,13 +125,16 @@ void Player::playerControl()
 	}
 
 	//Sprint
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift)) { speedMAX = 6; }
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift)) { speedMAX = 4.5; }
 	else { speedMAX = 3; }
 
 	//fire
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::LControl))
+	{
 		gun.fire(entityRec.getPosition(), Angle);
 
+		//entityRec.setTextureRect(playerFrame[3][0]); // shoot
+	}
 }
 
 void Player::playerAnimation()

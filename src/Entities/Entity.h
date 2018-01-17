@@ -22,7 +22,7 @@ public:
 	float gravity = 0.6f;
 	sf::Vector2f velocity = { 0, 0 };
 
-	int Angle;
+	int Angle = 90;
 
 protected:
 	int currentHealth = 10;

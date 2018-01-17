@@ -2,6 +2,7 @@
 #define STATEBASE_H_INCLUDED
 
 #include <SFML/Graphics.hpp>
+#include <iostream>
 
 class Game;
 

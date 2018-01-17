@@ -3,11 +3,12 @@
 A generic 2D platformer that I'm working on as a project.
 
 Controls:
-- A - Left
+- A - left
 - D - right
 - Space - jump
 - LShift - sprint
 - LControl - shoot
+- Esc - ingame menu
 
 Features:
 - very basic AABB Collision
@@ -17,6 +18,7 @@ Features:
 - player animation 
 - the map only draws what you see(in the default view, not when you zoom in or out)
 - projectiles
+- ingame menu(the game is frozen until you exit the meu)
 
 
 Upcoming features:

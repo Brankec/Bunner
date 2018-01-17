@@ -5,8 +5,11 @@
 #include "../Entities/Player.h"
 #include "../Util/Camera.h"
 #include "../World/Map.h"
+#include "../GUI/Menu.h"
 
-class StatePlaying : public StateBase
+class StatePlaying
+	: public StateBase
+	, public Menu
 {
  public:
 	 StatePlaying(Game& game);
@@ -20,6 +23,7 @@ class StatePlaying : public StateBase
 private:
 	Player player;
 	Map map;
+	bool openMenu = false;
 };
 
 #endif // STATEPLAYING_H_INCLUDED
