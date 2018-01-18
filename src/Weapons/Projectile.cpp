@@ -11,7 +11,6 @@ Projectile::Projectile(const sf::Vector2f& position, float yaw, float projectile
 	float x = sin(yaw) * projectileSpeed;
 	float y = cos(yaw) * projectileSpeed;
 	projectileVelocity = { x, y };
-
 }
 
 

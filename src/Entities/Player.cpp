@@ -3,6 +3,7 @@
 
 
 Player::Player()
+	: walkingSound("footstep")
 {
 	entityRec.setSize({ 25,50 });
 	entityRec.setPosition(30, 400);
@@ -13,7 +14,7 @@ Player::Player()
 
 	speedMAX = 3;
 
-	//gravity = 0.5;
+	//gravity = 0.1;
 }
 
 void Player::loadPlayerAnimation()
@@ -49,7 +50,13 @@ void Player::playerUpdate(float deltaTime)
 {
 	setPos();
 
+	if ((int)velocity.y != 0)
+	{
+		isOnGround = false;
+	}
+
 	gun.update(Angle, deltaTime);
+	walkingSound.update(deltaTime);
 
 	playerAnimation();
 	frameDelay += deltaTime;	
@@ -82,6 +89,9 @@ void Player::playerControl()
 		{
 			if (frameDelay > 0.25f / abs(velocity.x))
 			{
+				if (isOnGround)
+					walkingSound.playSound(20);
+
 				frameStage.x++;
 				frameDelay = 0;
 			}
@@ -99,6 +109,9 @@ void Player::playerControl()
 		{
 			if (frameDelay > 0.25f / abs(velocity.x))
 			{
+				if (isOnGround)
+					walkingSound.playSound(20);
+
 				frameStage.x++;
 				frameDelay = 0;
 			}
@@ -109,9 +122,7 @@ void Player::playerControl()
 	else
 	{
 		frameStage.x = 0;
-		velocity.x = Lerp(velocity.x, 0, 0.1f); 
-
-		//if(abs(velocity.x) != 0)
+		velocity.x = Lerp(velocity.x, 0, 0.1f);
 
 		if(abs(velocity.x) < 0.3f)
 			velocity.x = round(velocity.x);
@@ -132,7 +143,6 @@ void Player::playerControl()
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::LControl))
 	{
 		gun.fire(entityRec.getPosition(), Angle);
-
 		//entityRec.setTextureRect(playerFrame[3][0]); // shoot
 	}
 }

@@ -242,6 +242,7 @@ void Map::Collision(Player &player)
 		if (PlayerBottom > BlockTop && PlayerTop < BlockTop)    //Top side of the block
 		{
 			player.isJumping = false;
+			player.isOnGround = true;
 			player.entityRec.move(0, -player.velocity.y);
 			player.velocity.y = 0;
 		}

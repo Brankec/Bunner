@@ -1,5 +1,6 @@
 #include <SFML/Graphics.hpp>
 #include "Button.h"
+#include "../Entities/Player.h"
 
 #pragma once
 class Menu
@@ -10,13 +11,15 @@ public:
 protected:
 	void buttonPress(sf::Event e);
 
-	void ButtonUpdate();
+	void ButtonUpdate(Player& player);
 	void ExitWindow();
+	void RestartGame(Player& player);
 
 	void renderMenu(sf::RenderTarget& renderer);
 
 private:
 	sf::RectangleShape MenuBackground;
-	Button ExitButton;
+	sf::Texture menuTex;
+	Button ExitButton, RestartButton;
 };
 

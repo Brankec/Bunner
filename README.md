@@ -16,13 +16,14 @@ Features:
 - sprinting
 - supports 3 layers of drawing. Background, Main(aka player layer), Foreground. Background and Foreground are used for decorations
 - player animation 
+- player running sound
 - the map only draws what you see(in the default view, not when you zoom in or out)
 - projectiles
-- ingame menu(the game is frozen until you exit the meu)
+- ingame menu(the game is frozen until you exit the menu)
 
 
 Upcoming features:
-- ambient sound and player movement sound
+- ambient sound
 
 
 Possible features:

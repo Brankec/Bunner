@@ -44,7 +44,7 @@ void StatePlaying::update(sf::Time deltaTime)
 	}
 	else
 	{
-		ButtonUpdate(); //updates the button function
+		ButtonUpdate(player); //updates the button function
 	}
 }
 

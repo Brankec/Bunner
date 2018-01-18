@@ -17,7 +17,16 @@ void Button::loadTexture(std::string fileName)
 void Button::isButtonPressed(sf::FloatRect mousePos, sf::Event e)
 {
 	if (mousePos.intersects(buttonRec.getGlobalBounds()))
-		if (e.type == sf::Event::MouseButtonPressed)
-			buttonPressed = !buttonPressed;
-
+	{
+		buttonRec.setFillColor(sf::Color::Red);
+		if (e.type == sf::Event::MouseButtonReleased)
+		{
+			buttonPressed = true;
+		}
+	}
+	else
+	{
+		buttonPressed = false;
+		buttonRec.setFillColor(sf::Color::White);
+	}
 }

@@ -3,22 +3,26 @@
 
 
 Menu::Menu()
-	: ExitButton({750,300}, "ExitButton")
+	: ExitButton({ 750,300 }, "ExitButton")
+	, RestartButton({ 750,400 }, "RestartButton")
 {
-	MenuBackground.setSize({ 900,600 });
+	MenuBackground.setSize({ 1500,900 });
 	MenuBackground.setOrigin(MenuBackground.getSize().x / 2, MenuBackground.getSize().y / 2);
 	MenuBackground.setPosition({ 750, 450 });
-	MenuBackground.setFillColor(sf::Color::Black);
+	if (menuTex.loadFromFile("res/GUI/menu_background.png"))
+	MenuBackground.setTexture(&menuTex);
 }
 
 void Menu::buttonPress(sf::Event e)
 {
 	ExitButton.isButtonPressed({(float)e.mouseButton.x, (float)e.mouseButton.y, 1, 1}, e);
+	RestartButton.isButtonPressed({ (float)e.mouseButton.x, (float)e.mouseButton.y, 1, 1 }, e);
 }
 
-void Menu::ButtonUpdate()
+void Menu::ButtonUpdate(Player& player)
 {
 	ExitWindow();
+	RestartGame(player);
 }
 void Menu::ExitWindow()
 {
@@ -27,10 +31,13 @@ void Menu::ExitWindow()
 		exit(-1);
 	}
 }
-//void Menu::RestartGame
-
-
-
+void Menu::RestartGame(Player& player)
+{
+	if (RestartButton.buttonPressed == true)
+	{
+		player.entityRec.setPosition(30, 300);
+	}
+}
 
 
 
@@ -41,5 +48,6 @@ void Menu::renderMenu(sf::RenderTarget& renderer)
 {
 	renderer.draw(MenuBackground);
 	renderer.draw(ExitButton.buttonRec);
+	renderer.draw(RestartButton.buttonRec);
 }
 
