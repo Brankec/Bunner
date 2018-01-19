@@ -12,13 +12,13 @@ Controls:
 
 Features:
 - very basic AABB Collision
-- basic 2D platformer movements with a simple Lerp acceleration and deceleration
+- basic 2D platformer movements with a simple Lerp acceleration and deceleration(with footstep sound)
 - sprinting
 - supports 3 layers of drawing. Background, Main(aka player layer), Foreground. Background and Foreground are used for decorations
 - player animation 
 - player running sound
 - the map only draws what you see(in the default view, not when you zoom in or out)
-- projectiles
+- projectiles(with sound)
 - ingame menu(the game is frozen until you exit the menu)
 
 
