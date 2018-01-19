@@ -1,5 +1,5 @@
 #pragma once
-#include "EntitySound.h"
+#include "../../Sound/Sound.h"
 #include <vector>
 
 class PlayEntitySound
@@ -20,6 +20,6 @@ protected:
 	sf::SoundBuffer soundBuffer;
 
 private:
-	std::vector<EntitySound> entitySound;
+	std::vector<Sound> entitySound;
 };
 

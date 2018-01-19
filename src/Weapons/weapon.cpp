@@ -4,7 +4,7 @@ weapon::weapon()
 {
 }
 
-void weapon::fire(const sf::Vector2f& playerPosition, float angle)
+void weapon::fire(const sf::Vector2f& playerPosition, float angle, sf::SoundBuffer& soundBuffer)
 {
 
 	float m_yaw = (180.0f - angle) / 180.0f * 3.14159265358979;
@@ -12,6 +12,7 @@ void weapon::fire(const sf::Vector2f& playerPosition, float angle)
 	int speed = 5;
 	if (time > delayTime)
 	{
+		weaponSound.playSound(soundBuffer, 30);
 		projectiles.emplace_back(playerPosition, m_yaw, projectileSpeed, projectileSize);
 		time = 0;
 	}

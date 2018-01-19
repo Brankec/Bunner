@@ -1,15 +1,15 @@
-#include "EntitySound.h"
+#include "Sound.h"
 
 
 
-EntitySound::EntitySound(sf::SoundBuffer& soundBuffer, int volume)
+Sound::Sound(sf::SoundBuffer& soundBuffer, int volume)
 {
 	sound.setBuffer(soundBuffer);
 	sound.setVolume(volume);
 	sound.play();
 }
 
-bool EntitySound::isSoundStop()
+bool Sound::isSoundStop()
 {
 	if (sound.getStatus() == sound.Stopped)
 		return true;

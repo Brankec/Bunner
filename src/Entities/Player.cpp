@@ -4,6 +4,7 @@
 
 Player::Player()
 	: walkingSound("footstep")
+	, gun("mini_gunSound")
 {
 	entityRec.setSize({ 25,50 });
 	entityRec.setPosition(30, 400);
@@ -142,7 +143,7 @@ void Player::playerControl()
 	//fire
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::LControl))
 	{
-		gun.fire(entityRec.getPosition(), Angle);
+		gun.fireGun(entityRec.getPosition(), Angle);
 		//entityRec.setTextureRect(playerFrame[3][0]); // shoot
 	}
 }

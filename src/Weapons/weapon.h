@@ -1,6 +1,7 @@
-#include <SFML\Audio.hpp>
-#include <SFML\Graphics.hpp>
+#include <SFML/Audio.hpp>
+#include <SFML/Graphics.hpp>
 #include "Projectile.h"
+#include "WeaponSound/PlayWeaponSound.h"
 
 #pragma once
 class weapon
@@ -13,9 +14,6 @@ public:
 	int animationSequence;
 	sf::Texture weaponTexture;
 	sf::RectangleShape weaponRec;
-	sf::SoundBuffer weaponSound, weaponReloadSound;
-	sf::Sound shootSound, reloadSound;
-
 
 	//functionality
 	int damage;
@@ -26,7 +24,7 @@ public:
 	int ammo;
 	sf::Vector2f projectileSize;
 
-	void fire(const sf::Vector2f& playerPosition, float angle);
+	void fire(const sf::Vector2f& playerPosition, float angle, sf::SoundBuffer& soundBuffer);
 	void draw(sf::RenderTarget& renderer);
 	void update(float angle, float dt);
 	void age(float dt);
@@ -35,6 +33,7 @@ public:
 
 public:
 	std::vector<Projectile> projectiles;
+	PlayWeaponSound weaponSound;
 	float time = 0;
 	float delayTime = 0;
 };

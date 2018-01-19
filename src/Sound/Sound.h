@@ -2,10 +2,10 @@
 #include <iostream>
 
 #pragma once
-class EntitySound  
+class Sound  
 {
 public:
-	EntitySound(sf::SoundBuffer& soundBuffer, int volume);
+	Sound(sf::SoundBuffer& soundBuffer, int volume);
 
 	bool isSoundStop();
 
