@@ -49,24 +49,18 @@ void Player::loadPlayerAnimation()
 
 void Player::playerUpdate(float deltaTime)
 {
-	if (isFinished == false)
+	setPos();
+
+	if ((int)velocity.y != 0)
 	{
-		setPos();
-
-		if ((int)velocity.y != 0)
-		{
-			isOnGround = false;
-		}
-
-		gun.update(Angle, deltaTime);
-		walkingSound.update(deltaTime);
-
-		playerAnimation();
-		frameDelay += deltaTime;
+		isOnGround = false;
 	}
-	else
-	{
-	}
+
+	gun.update(Angle, deltaTime);
+	walkingSound.update(deltaTime);
+
+	playerAnimation();
+	frameDelay += deltaTime;
 }
 
 void Player::setPos()
@@ -77,7 +71,9 @@ void Player::setPos()
 		entityRec.setPosition(900, 150);
 	}
 
-	velocity.y += gravity;
+	if (velocity.y < 10)
+		velocity.y += gravity;
+
 	entityRec.move(velocity.x, velocity.y);
 }
 

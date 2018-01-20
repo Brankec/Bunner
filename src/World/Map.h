@@ -50,6 +50,7 @@ public:
 	std::ifstream openfileMain;
 	std::ifstream openfileBackground;
 
-	//Collision GetCollision() { return Collision(tile[0]); }
+private:
+	bool reset[3] = { false, false, false };
 };
 

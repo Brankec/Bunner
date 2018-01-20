@@ -16,6 +16,9 @@ void Map::loadMap(std::string fileNameFore, std::string fileNameMain, std::strin
 	if (openfileBackground.is_open())
 		openfileBackground.close();
 
+	reset[0] = true;
+	reset[1] = true;
+	reset[2] = true;
 
 	openfileForeground.open("res/Maps/" + fileNameFore + ".txt");
 	openfileMain.open("res/Maps/" + fileNameMain + ".txt");
@@ -37,6 +40,8 @@ void Map::setOriginCenter()
 
 void Map::loadTilesForeground()
 {
+	mapForeGround.clear();
+
 	if (openfileForeground.is_open())
 	{
 		std::string tileLocation;
@@ -65,11 +70,12 @@ void Map::loadTilesForeground()
 }
 void Map::drawForeGround(sf::RenderTarget& renderer)
 {
+
 	float cam_x = Camera::getView().getCenter().x;
-	int cam_x_tile = cam_x / tile[1].getSize().x;
+	int cam_x_tile = cam_x / tile[2].getSize().x;
 	int Tile_row_width = (renderer.getSize().x + 1200) / mapForeGround[1].size();
 	float cam_y = Camera::getView().getCenter().y;
-	int cam_y_tile = cam_y / tile[1].getSize().y;
+	int cam_y_tile = cam_y / tile[2].getSize().y;
 	int Tile_column_height = renderer.getSize().y / mapForeGround.size();
 
 	int X_border_right = std::min((int)mapForeGround[1].size() - 1, cam_x_tile + Tile_row_width / 2);
@@ -91,6 +97,8 @@ void Map::drawForeGround(sf::RenderTarget& renderer)
 
 void Map::loadTilesMain()
 {
+	mapMain.clear();
+
 	if (openfileMain.is_open())
 	{
 		std::string tileLocation;
@@ -117,10 +125,11 @@ void Map::loadTilesMain()
 }
 void Map::drawMain(sf::RenderTarget & renderer, Player & player)
 {
+
 	float cam_x = Camera::getView().getCenter().x;
-	int cam_x_tile = cam_x / tile[1].getSize().x ;
+	int cam_x_tile = cam_x / tile[1].getSize().x;
 	int Tile_row_width = (renderer.getSize().x + 1200) / mapMain[1].size();
-	float cam_y = Camera::getView().getCenter().y + 200;
+	float cam_y = Camera::getView().getCenter().y;
 	int cam_y_tile = cam_y / tile[1].getSize().y;
 	int Tile_column_height = renderer.getSize().y / mapMain.size();
 
@@ -152,6 +161,8 @@ void Map::drawMain(sf::RenderTarget & renderer, Player & player)
 
 void Map::loadTilesBackground()
 {
+	mapBackGround.clear();
+
 	if (openfileBackground.is_open())
 	{
 		std::string tileLocation;
@@ -178,11 +189,12 @@ void Map::loadTilesBackground()
 }
 void Map::drawBackGround(sf::RenderTarget & renderer)
 {
+
 	float cam_x = Camera::getView().getCenter().x;
-	int cam_x_tile = cam_x / tile[1].getSize().x;
+	int cam_x_tile = cam_x / tile[0].getSize().x;
 	int Tile_row_width = (renderer.getSize().x + 1200) / mapBackGround[1].size();
 	float cam_y = Camera::getView().getCenter().y;
-	int cam_y_tile = cam_y / tile[1].getSize().y;
+	int cam_y_tile = cam_y / tile[0].getSize().y;
 	int Tile_column_height = renderer.getSize().y / mapBackGround.size();
 
 	int X_border_right = std::min((int)mapBackGround[1].size() - 1, cam_x_tile + Tile_row_width / 2);
