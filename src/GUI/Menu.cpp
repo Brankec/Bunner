@@ -35,7 +35,8 @@ void Menu::RestartGame(Player& player)
 {
 	if (RestartButton.buttonPressed == true)
 	{
-		player.entityRec.setPosition(30, 300);
+		player.velocity.y = 0;
+		player.entityRec.setPosition(900, 150);
 	}
 }
 

@@ -21,6 +21,7 @@ public:
 	bool isJumping = false;
 	bool isOnGround = true;
 	mini_gun gun;
+	bool isFinished = false;
 
 private:
 	float Lerp(float x, float y, float z);

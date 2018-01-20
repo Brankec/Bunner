@@ -6,11 +6,6 @@ mini_gun::mini_gun(std::string audioName)
 	defaults();
 }
 
-
-mini_gun::~mini_gun()
-{
-}
-
 void mini_gun::fireGun(const sf::Vector2f & playerPosition, float angle)
 {
 	fire(playerPosition, angle, m_gunBuffer);

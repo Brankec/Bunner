@@ -7,7 +7,7 @@ Player::Player()
 	, gun("mini_gunSound")
 {
 	entityRec.setSize({ 25,50 });
-	entityRec.setPosition(30, 400);
+	entityRec.setPosition(900, 150);
 	entityRec.setOrigin(entityRec.getSize().x / 2, entityRec.getSize().y / 2);
 	loadTextureToRec();
 	loadPlayerAnimation();
@@ -49,24 +49,33 @@ void Player::loadPlayerAnimation()
 
 void Player::playerUpdate(float deltaTime)
 {
-	setPos();
-
-	if ((int)velocity.y != 0)
+	if (isFinished == false)
 	{
-		isOnGround = false;
+		setPos();
+
+		if ((int)velocity.y != 0)
+		{
+			isOnGround = false;
+		}
+
+		gun.update(Angle, deltaTime);
+		walkingSound.update(deltaTime);
+
+		playerAnimation();
+		frameDelay += deltaTime;
 	}
-
-	gun.update(Angle, deltaTime);
-	walkingSound.update(deltaTime);
-
-	playerAnimation();
-	frameDelay += deltaTime;	
+	else
+	{
+	}
 }
 
 void Player::setPos()
 {
-	if (getPos().y > 1000)
-		entityRec.setPosition(30, 300);
+	if (getPos().y > 2000)
+	{
+		velocity.y = 0;
+		entityRec.setPosition(900, 150);
+	}
 
 	velocity.y += gravity;
 	entityRec.move(velocity.x, velocity.y);

@@ -2,8 +2,8 @@
 
 StatePlaying::StatePlaying(Game& game)
 :   StateBase   (game)
-,   map("Map1_foreground", "Map1_main", "Map1_background", 6, 8, { 32,32 })
 {
+	map.loadMap("Map2_foreground", "Map2_main", "Map2_background", 6, 9, { 32,32 });
 }
 
 void StatePlaying::handleEvent(sf::Event e)
@@ -37,6 +37,12 @@ void StatePlaying::handleInput()
 
 void StatePlaying::update(sf::Time deltaTime)
 {
+	if (player.isFinished)
+	{
+		map.loadMap("Map1_foreground", "Map1_main", "Map1_background", 6, 9, { 32,32 });
+		player.isFinished = false;
+	}
+
 	if (openMenu == false)
 	{
 		player.playerUpdate(deltaTime.asSeconds());

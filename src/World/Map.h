@@ -13,9 +13,11 @@
 class Map
 {
 public:
-	Map(std::string fileNameFore, std::string fileNameMain, std::string fileNameBack, int n, int amountOfTiles, sf::Vector2i tileSize);
+	Map();
 
 public:
+	void loadMap(std::string fileNameFore, std::string fileNameMain, std::string fileNameBack, int n, int amountOfTiles, sf::Vector2i tileSize);
+
 	void loadTilesForeground();
 	void drawForeGround(sf::RenderTarget& renderer);
 	void loadTilesMain();
@@ -40,6 +42,7 @@ public:
 	sf::Vector2i tileSize;
 	int amountOfTiles;
 	void Collision(Player &player);
+	void Objective(Player &player);
 	void ProjectileCollision(Player &player);
 
 	//open the file containing the tile name and tile positions
