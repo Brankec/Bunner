@@ -3,7 +3,8 @@
 StatePlaying::StatePlaying(Game& game)
 :   StateBase   (game)
 {
-	map.loadMap("Map1_background", "Map1_backgroundMain", "Map1_main", "Map1_foreground", 6, 9, { 32,32 });
+	Camera::view.zoom(1.4f);
+	map.loadMap(levels);
 }
 
 void StatePlaying::handleEvent(sf::Event e)
@@ -41,16 +42,20 @@ void StatePlaying::update(sf::Time deltaTime)
 	{
 		if (player.isFinished) //for loading other maps
 		{
-			static int level = 1;
-			map.loadMap("Map" + std::to_string(1) + "_background", 
-				        "Map" + std::to_string(1) + "_backgroundMain",
-				        "Map" + std::to_string(1) + "_main", 
-				        "Map" + std::to_string(1) + "_foreground", 
-				        6, 9, { 32,32 });
-			if (level < 2)
-				level++;
-			else
-				level = 1;
+			nextLevel++;
+			switch (nextLevel)
+			{
+			case 2:
+				levels.Level_2();
+				nextLevel++;
+				break;
+			default:
+				nextLevel = 1;
+				levels.Level_1();
+				break;
+			}
+
+			map.loadMap(levels);
 
 			player.entityRec.setPosition(30, -200);
 			player.isFinished = false;

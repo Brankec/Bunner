@@ -6,6 +6,7 @@
 #include "../Util/Camera.h"
 #include "../World/Map.h"
 #include "../GUI/Menu.h"
+#include "../World/Level.h"
 
 class StatePlaying
 	: public StateBase
@@ -21,6 +22,8 @@ class StatePlaying
      void render         (sf::RenderTarget& renderer)    override;
 
 private:
+	int nextLevel = 1;
+	Level levels;
 	Player player;
 	Map map;
 	bool openMenu = false;

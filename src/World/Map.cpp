@@ -6,7 +6,7 @@ Map::Map()
 	setOriginCenter();
 }
 
-void Map::loadMap(std::string fileNameBack, std::string fileNameBackMain,  std::string fileNameMain, std::string fileNameFore, int n, int amountOfTiles, sf::Vector2i tileSize)
+void Map::loadMap(Level& levelsPass)
 {
 	if (openfileForeground.is_open())
 		openfileForeground.close();
@@ -20,14 +20,17 @@ void Map::loadMap(std::string fileNameBack, std::string fileNameBackMain,  std::
 	if (openfileBackground.is_open())
 		openfileBackground.close();
 
-	openfileForeground.open("res/Maps/" + fileNameFore + ".txt");
-	openfileMain.open("res/Maps/" + fileNameMain + ".txt");
-	openfileBackgroundMain.open("res/Maps/" + fileNameBackMain + ".txt");
-	openfileBackground.open("res/Maps/" + fileNameBack + ".txt");
+	this->levels = &levelsPass;
 
-	this->powOfN = pow(2, n);
-	this->amountOfTiles = amountOfTiles;
-	this->tileSize = tileSize;
+	openfileForeground.open("res/Maps/" + levels->ForeGround + ".txt");
+	openfileMain.open("res/Maps/" + levels->Main + ".txt");
+	openfileBackgroundMain.open("res/Maps/" + levels->BackGroundMain + ".txt");
+	openfileBackground.open("res/Maps/" + levels->BackGround + ".txt");
+
+	this->powOfN = pow(2, levels->gridSize);
+	this->amountOfTiles = levels->amountOfTilesX;
+	this->tileSize = levels->tileSize;
+	this->objectiveTileCoords = levels->objectiveTileCoords;
 
 	loadTilesForeground();
 	loadTilesMain();
@@ -75,10 +78,10 @@ void Map::drawForeGround(sf::RenderTarget& renderer)
 	{
 		float cam_x = Camera::getView().getCenter().x;
 		int cam_x_tile = cam_x / tile[3].getSize().x;
-		int Tile_row_width = (renderer.getSize().x + 1200) / mapForeGround[1].size();
+		int Tile_row_width = (renderer.getView().getSize().x + 2000) / mapForeGround[1].size();
 		float cam_y = Camera::getView().getCenter().y;
 		int cam_y_tile = cam_y / tile[3].getSize().y;
-		int Tile_column_height = renderer.getSize().y / mapForeGround.size();
+		int Tile_column_height = (renderer.getView().getSize().y) / mapForeGround.size();
 
 		int X_border_right = std::min((int)mapForeGround[1].size() - 1, cam_x_tile + Tile_row_width / 2);
 		int Y_border_right = std::min((int)mapForeGround.size(), cam_y_tile + Tile_column_height / 2);
@@ -132,10 +135,10 @@ void Map::drawMain(sf::RenderTarget & renderer, Player & player)
 	{
 		float cam_x = Camera::getView().getCenter().x;
 		int cam_x_tile = cam_x / tile[2].getSize().x;
-		int Tile_row_width = (renderer.getSize().x + 1200) / mapMain[1].size();
+		int Tile_row_width = (renderer.getView().getSize().x + 2000) / mapMain[1].size();
 		float cam_y = Camera::getView().getCenter().y;
 		int cam_y_tile = cam_y / tile[2].getSize().y;
-		int Tile_column_height = renderer.getSize().y / mapMain.size();
+		int Tile_column_height = (renderer.getView().getSize().y + 300) / mapMain.size();
 
 		int X_border_right = std::min((int)mapMain[1].size() - 1, cam_x_tile + Tile_row_width / 2);
 		int Y_border_right = std::min((int)mapMain.size(), cam_y_tile + Tile_column_height / 2);
@@ -148,7 +151,7 @@ void Map::drawMain(sf::RenderTarget & renderer, Player & player)
 					tile[2].setPosition(x * (float)powOfN, y * (float)powOfN);
 					tile[2].setTextureRect(sf::IntRect(mapMain[y][x].x + 1, mapMain[y][x].y + 1, tileSize.x - 2, tileSize.y - 2));
 
-					if (mapMain[y][x].y == 0 && mapMain[y][x].x == 256) //objective tile
+					if (mapMain[y][x].y == 0 && mapMain[y][x].x == objectiveTileCoords) //objective tile
 						Objective(player);
 					else
 						Collision(player);
@@ -197,10 +200,10 @@ void Map::drawBackGroundMain(sf::RenderTarget & renderer, Player & player)
 	{
 		float cam_x = Camera::getView().getCenter().x;
 		int cam_x_tile = cam_x / tile[1].getSize().x;
-		int Tile_row_width = (renderer.getSize().x + 1200) / mapBackGroundMain[1].size();
+		int Tile_row_width = (renderer.getView().getSize().x + 2000) / mapBackGroundMain[1].size();
 		float cam_y = Camera::getView().getCenter().y;
 		int cam_y_tile = cam_y / tile[1].getSize().y;
-		int Tile_column_height = renderer.getSize().y / mapBackGroundMain.size();
+		int Tile_column_height = (renderer.getView().getSize().y) / mapBackGroundMain.size();
 
 		int X_border_right = std::min((int)mapBackGroundMain[1].size() - 1, cam_x_tile + Tile_row_width / 2);
 		int Y_border_right = std::min((int)mapBackGroundMain.size(), cam_y_tile + Tile_column_height / 2);
@@ -213,10 +216,30 @@ void Map::drawBackGroundMain(sf::RenderTarget & renderer, Player & player)
 					tile[1].setPosition(x * (float)powOfN, y * (float)powOfN);
 					tile[1].setTextureRect(sf::IntRect(mapBackGroundMain[y][x].x + 1, mapBackGroundMain[y][x].y + 1, tileSize.x - 2, tileSize.y - 2));
 
-					if (mapBackGroundMain[y][x].y == 0 && mapBackGroundMain[y][x].x == 0 ||
-						mapBackGroundMain[y][x].y == 0 && mapBackGroundMain[y][x].x == 32 ||
-						mapBackGroundMain[y][x].y == 0 && mapBackGroundMain[y][x].x == 64) //collision tiles
-					CollisionTopOnly(player);
+
+
+
+					if (levels->whichLevel == 1) // THIS IS ONLY TEMPORARY
+					{
+						if (mapBackGroundMain[y][x].y == 224 && mapBackGroundMain[y][x].x == 0 ||
+							mapBackGroundMain[y][x].y == 224 && mapBackGroundMain[y][x].x == 32 ||
+							mapBackGroundMain[y][x].y == 224 && mapBackGroundMain[y][x].x == 64 ||
+							mapBackGroundMain[y][x].y == 224 && mapBackGroundMain[y][x].x == 448 ||
+							mapBackGroundMain[y][x].y == 224 && mapBackGroundMain[y][x].x == 480 ||
+							mapBackGroundMain[y][x].y == 224 && mapBackGroundMain[y][x].x == 512) //collision tiles
+						{
+							CollisionTopOnly(player);
+						}
+					}
+					else if (levels->whichLevel == 2)
+					{
+						if (mapBackGroundMain[y][x].y == 0 && mapBackGroundMain[y][x].x == 0 ||
+							mapBackGroundMain[y][x].y == 0 && mapBackGroundMain[y][x].x == 32 ||
+							mapBackGroundMain[y][x].y == 0 && mapBackGroundMain[y][x].x == 64)
+						{
+							CollisionTopOnly(player);
+						}
+					}
 
 					renderer.draw(tile[1]);
 				}
@@ -259,10 +282,10 @@ void Map::drawBackGround(sf::RenderTarget & renderer)
 	{
 		float cam_x = Camera::getView().getCenter().x;
 		int cam_x_tile = cam_x / tile[0].getSize().x;
-		int Tile_row_width = (renderer.getSize().x + 1200) / mapBackGround[1].size();
+		int Tile_row_width = (renderer.getView().getSize().x + 2000) / mapBackGround[1].size();
 		float cam_y = Camera::getView().getCenter().y;
 		int cam_y_tile = cam_y / tile[0].getSize().y;
-		int Tile_column_height = renderer.getSize().y / mapBackGround.size();
+		int Tile_column_height = (renderer.getView().getSize().y) / mapBackGround.size();
 
 		int X_border_right = std::min((int)mapBackGround[1].size() - 1, cam_x_tile + Tile_row_width / 2);
 		int Y_border_right = std::min((int)mapBackGround.size(), cam_y_tile + Tile_column_height / 2);
@@ -271,9 +294,9 @@ void Map::drawBackGround(sf::RenderTarget & renderer)
 			for (int y = std::max(cam_y_tile - Tile_column_height / 2, 0); y < Y_border_right; y++)
 			{
 				if (mapBackGround[y][x].x != -1 && mapBackGround[y][x].y != -1)
-				{
+				{					
 					tile[0].setPosition(x * (float)powOfN, y * (float)powOfN);
-					tile[0].setTextureRect(sf::IntRect(mapBackGround[y][x].x + 1, mapBackGround[y][x].y + 1, tileSize.x - 2, tileSize.y - 2));
+					tile[0].setTextureRect(sf::IntRect(mapBackGround[y][x].x + 2, mapBackGround[y][x].y + 2, tileSize.x - 3, tileSize.y - 3));
 
 					renderer.draw(tile[0]);
 				}
@@ -379,11 +402,11 @@ void Map::CollisionTopOnly(Player & player)
 
 void Map::Objective(Player &player)
 {
-	if (player.getAABB().intersects(tile[1].getGlobalBounds()))
+	if (player.getAABB().intersects(tile[2].getGlobalBounds()))
 		player.isFinished = true;
 }
 
 void Map::ProjectileCollision(Player &player)
 {
-	player.gun.bulletHit(tile[1]);
+	player.gun.bulletHit(tile[2]);
 }

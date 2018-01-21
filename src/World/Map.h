@@ -1,4 +1,4 @@
-#include <SFML\Graphics.hpp>
+
 #include <iostream>
 #include <vector>
 #include <string>
@@ -7,6 +7,7 @@
 #include <cmath>
 #include "../Entities/Player.h"
 #include "../Util/Camera.h"
+#include "../World/Level.h"
 
 #pragma once
 
@@ -16,7 +17,7 @@ public:
 	Map();
 
 public:
-	void loadMap(std::string fileNameBack, std::string fileNameBackMain, std::string fileNameMain, std::string fileNameFore, int n, int amountOfTiles, sf::Vector2i tileSize);
+	void loadMap(Level& levelsPass);
 
 	void loadTilesForeground();//for deocrations
 	void drawForeGround(sf::RenderTarget& renderer);
@@ -36,8 +37,10 @@ public:
 
 
 public:
+	Level* levels;
 	int powOfN;
 	int tileIndex = 0;
+	int objectiveTileCoords = 0;
 	sf::Texture tileTexture;
 	sf::RectangleShape tile[4];  // 0) background, 1) background-main(only top has collision), 2) main(playerbase), 3) foreground
 

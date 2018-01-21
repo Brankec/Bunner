@@ -9,6 +9,7 @@ Controls:
 - LShift - sprint
 - LControl - shoot
 - Esc - ingame menu
+- Mouse wheel - for zooming in or out
 
 Features:
 - very basic AABB Collision

@@ -15,7 +15,7 @@ Player::Player()
 
 	speedMAX = 3;
 
-	//gravity = 0.1;
+	gravity = 0.6;
 }
 
 void Player::loadPlayerAnimation()
@@ -65,11 +65,11 @@ void Player::playerUpdate(float deltaTime)
 
 void Player::setPos()
 {
-	if (getPos().y > 2000)
+	/*if (getPos().y > 2000)
 	{
 		velocity.y = 0;
 		entityRec.setPosition(900, 150);
-	}
+	}*/
 
 	if (velocity.y < 10)
 		velocity.y += gravity;
@@ -142,7 +142,7 @@ void Player::playerControl()
 	}
 
 	//Sprint
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift)) { speedMAX = 4.5; }
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift)) { speedMAX = 6; }
 	else { speedMAX = 3; }
 
 	//fire
