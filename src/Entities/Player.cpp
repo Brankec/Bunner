@@ -14,8 +14,9 @@ Player::Player()
 	entityRec.setTextureRect(sf::IntRect(0, 0, 7, 11));
 
 	speedMAX = 3;
+	stamina = 100;
 
-	gravity = 0.6;
+	//gravity = 0.1;
 }
 
 void Player::loadPlayerAnimation()
@@ -142,8 +143,22 @@ void Player::playerControl()
 	}
 
 	//Sprint
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift)) { speedMAX = 6; }
-	else { speedMAX = 3; }
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift) && isStaminaFull) 
+	{ 
+		if (stamina < 1)
+			isStaminaFull = false;
+
+		stamina -= 1;
+		speedMAX = 6; 
+	}
+	else 
+	{ 
+		if (stamina >= 100)
+			isStaminaFull = true;
+
+		stamina += 0.3;
+		speedMAX = 3; 
+	}
 
 	//fire
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::LControl))
@@ -160,7 +175,7 @@ void Player::playerAnimation()
 	{
 		entityRec.setTextureRect(playerFrame[0][0]); // stand still
 	}
-	else
+	else if(isOnGround)
 	{
 		entityRec.setTextureRect(playerFrame[frameStage.x][1]); //run
 	}

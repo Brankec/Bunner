@@ -11,6 +11,9 @@ void Map::loadMap(Level& levelsPass)
 	if (openfileForeground.is_open())
 		openfileForeground.close();
 
+	if (openfileInteractables.is_open())
+		openfileInteractables.close();
+
 	if (openfileMain.is_open())
 		openfileMain.close();
 
@@ -22,6 +25,7 @@ void Map::loadMap(Level& levelsPass)
 
 	this->levels = &levelsPass;
 
+	openfileInteractables.open("res/Maps/" + levels->Interactable + ".txt");
 	openfileForeground.open("res/Maps/" + levels->ForeGround + ".txt");
 	openfileMain.open("res/Maps/" + levels->Main + ".txt");
 	openfileBackgroundMain.open("res/Maps/" + levels->BackGroundMain + ".txt");
@@ -33,6 +37,7 @@ void Map::loadMap(Level& levelsPass)
 	this->objectiveTileCoords = levels->objectiveTileCoords;
 
 	loadTilesForeground();
+	loadTilesInteractives();
 	loadTilesMain();
 	loadTilesBackgroundMain();
 	loadTilesBackground();
@@ -83,7 +88,7 @@ void Map::drawForeGround(sf::RenderTarget& renderer)
 		int cam_y_tile = cam_y / tile[3].getSize().y;
 		int Tile_column_height = (renderer.getView().getSize().y) / mapForeGround.size();
 
-		int X_border_right = std::min((int)mapForeGround[1].size() - 1, cam_x_tile + Tile_row_width / 2);
+		int X_border_right = std::min((int)mapForeGround[1].size(), cam_x_tile + Tile_row_width / 2);
 		int Y_border_right = std::min((int)mapForeGround.size(), cam_y_tile + Tile_column_height / 2);
 
 		for (int x = std::max(cam_x_tile - Tile_row_width / 2, 0); x < X_border_right; x++)
@@ -95,6 +100,66 @@ void Map::drawForeGround(sf::RenderTarget& renderer)
 					tile[3].setTextureRect(sf::IntRect(mapForeGround[y][x].x + 1, mapForeGround[y][x].y + 1, tileSize.x - 2, tileSize.y - 2));
 
 					renderer.draw(tile[3]);
+				}
+			}
+	}
+}
+
+void Map::loadTilesInteractives()
+{
+	mapInteractables.clear();
+
+	if (openfileInteractables.is_open())
+	{
+		std::string tileLocation;
+		openfileInteractables >> tileLocation;
+
+		if (tileTexture.loadFromFile(tileLocation))
+			tile[4].setTexture(&tileTexture);
+
+		tile[4].setSize(sf::Vector2f((float)powOfN, (float)powOfN));
+
+		while (openfileInteractables.good())
+		{
+			openfileInteractables >> tileIndex;
+			if (tileIndex != ',')
+				tempMap.push_back(Sprite_sheet_coordinates(tileIndex - 1)); //the indices will always be for 1 less inside the code(so 0 is actually -1 and 1 is actually 0)
+
+			if (openfileInteractables.peek() == '\n')
+			{
+				mapInteractables.push_back(tempMap);
+				tempMap.clear();
+			}
+
+		}
+	}
+}
+void Map::drawInteractives(sf::RenderTarget& renderer, Player &player)
+{
+	if (mapInteractables.size() != 0)
+	{
+		float cam_x = Camera::getView().getCenter().x;
+		int cam_x_tile = cam_x / tile[4].getSize().x;
+		int Tile_row_width = (renderer.getView().getSize().x + 2000) / mapInteractables[1].size();
+		float cam_y = Camera::getView().getCenter().y;
+		int cam_y_tile = cam_y / tile[4].getSize().y;
+		int Tile_column_height = (renderer.getView().getSize().y) / mapInteractables.size();
+
+		int X_border_right = std::min((int)mapInteractables[1].size(), cam_x_tile + Tile_row_width / 2);
+		int Y_border_right = std::min((int)mapInteractables.size(), cam_y_tile + Tile_column_height / 2);
+
+		for (int x = std::max(cam_x_tile - Tile_row_width / 2, 0); x < X_border_right; x++)
+			for (int y = std::max(cam_y_tile - Tile_column_height / 2, 0); y < Y_border_right; y++)
+			{
+				if (mapInteractables[y][x].x != -1 && mapInteractables[y][x].y != -1)
+				{
+					tile[4].setPosition(x * (float)powOfN, y * (float)powOfN);
+					tile[4].setTextureRect(sf::IntRect(mapInteractables[y][x].x + 1, mapInteractables[y][x].y + 1, tileSize.x - 2, tileSize.y - 2));
+
+					//if(mapInteractables[y][x].x == 64 && mapInteractables[y][x].y == 640)
+					Bounce(player);
+
+					renderer.draw(tile[4]);
 				}
 			}
 	}
@@ -140,7 +205,7 @@ void Map::drawMain(sf::RenderTarget & renderer, Player & player)
 		int cam_y_tile = cam_y / tile[2].getSize().y;
 		int Tile_column_height = (renderer.getView().getSize().y + 300) / mapMain.size();
 
-		int X_border_right = std::min((int)mapMain[1].size() - 1, cam_x_tile + Tile_row_width / 2);
+		int X_border_right = std::min((int)mapMain[1].size(), cam_x_tile + Tile_row_width / 2);
 		int Y_border_right = std::min((int)mapMain.size(), cam_y_tile + Tile_column_height / 2);
 
 		for (int x = std::max(cam_x_tile - Tile_row_width / 2, 0); x < X_border_right; x++)
@@ -156,7 +221,7 @@ void Map::drawMain(sf::RenderTarget & renderer, Player & player)
 					else
 						Collision(player);
 
-
+					Bounce(player);
 
 					ProjectileCollision(player);
 
@@ -205,7 +270,7 @@ void Map::drawBackGroundMain(sf::RenderTarget & renderer, Player & player)
 		int cam_y_tile = cam_y / tile[1].getSize().y;
 		int Tile_column_height = (renderer.getView().getSize().y) / mapBackGroundMain.size();
 
-		int X_border_right = std::min((int)mapBackGroundMain[1].size() - 1, cam_x_tile + Tile_row_width / 2);
+		int X_border_right = std::min((int)mapBackGroundMain[1].size(), cam_x_tile + Tile_row_width / 2);
 		int Y_border_right = std::min((int)mapBackGroundMain.size(), cam_y_tile + Tile_column_height / 2);
 
 		for (int x = std::max(cam_x_tile - Tile_row_width / 2, 0); x < X_border_right; x++)
@@ -287,7 +352,7 @@ void Map::drawBackGround(sf::RenderTarget & renderer)
 		int cam_y_tile = cam_y / tile[0].getSize().y;
 		int Tile_column_height = (renderer.getView().getSize().y) / mapBackGround.size();
 
-		int X_border_right = std::min((int)mapBackGround[1].size() - 1, cam_x_tile + Tile_row_width / 2);
+		int X_border_right = std::min((int)mapBackGround[1].size(), cam_x_tile + Tile_row_width / 2);
 		int Y_border_right = std::min((int)mapBackGround.size(), cam_y_tile + Tile_column_height / 2);
 
 		for (int x = std::max(cam_x_tile - Tile_row_width / 2, 0); x < X_border_right; x++)
@@ -390,12 +455,64 @@ void Map::CollisionTopOnly(Player & player)
 		PlayerBottom > BlockTop - 10 &&
 		PlayerTop < BlockBottom)
 	{
-		if (PlayerBottom > BlockTop && PlayerTop < BlockTop -9 && player.velocity.y > 0)    //Top side of the block
+		if (PlayerBottom > BlockTop && PlayerTop < BlockTop -15 && player.velocity.y > 0)    //Top side of the block
 		{
 			player.isJumping = false;
 			player.isOnGround = true;
 			player.entityRec.move(0, -player.velocity.y);
 			player.velocity.y = 0;
+		}
+	}
+}
+
+void Map::Bounce(Player & player)
+{
+	float PlayerLeft = player.entityRec.getPosition().x - player.getAABB().width / 2;
+	float PlayerRight = player.entityRec.getPosition().x + player.getAABB().width / 2;
+	float PlayerTop = player.entityRec.getPosition().y - player.getAABB().height / 2;
+	float PlayerBottom = player.entityRec.getPosition().y + player.getAABB().height / 2;
+
+	float BlockLeft = tile[4].getPosition().x;
+	float BlockRight = tile[4].getPosition().x + tile[2].getSize().x;
+	float BlockTop = tile[4].getPosition().y;
+	float BlockBottom = tile[4].getPosition().y + tile[2].getSize().y;
+
+	if (PlayerRight > BlockLeft - 10 &&
+		PlayerLeft < BlockRight + 10 &&
+		PlayerBottom > BlockTop + 5 &&
+		PlayerTop < BlockBottom - 5)
+	{
+		if (PlayerRight >= BlockLeft && PlayerLeft <= BlockLeft)  //Left side of the Block
+		{
+			player.entityRec.move(-0.5, 0);
+			player.velocity.x = 0;
+		}
+
+		if (PlayerLeft <= BlockRight && PlayerRight >= BlockRight)   //Right side of the block
+		{
+			player.entityRec.move(-player.velocity.x, 0);
+			player.entityRec.move(0.5, 0);
+			player.velocity.x = 0;
+		}
+
+	}
+	if (PlayerRight > BlockLeft + 5 &&
+		PlayerLeft < BlockRight - 5 &&
+		PlayerBottom > BlockTop - 10 &&
+		PlayerTop < BlockBottom + 10)
+	{
+		if (PlayerTop < BlockBottom && PlayerBottom > BlockBottom)    //Bottom side of the block
+		{
+			player.entityRec.move(0, -player.velocity.y);
+			player.velocity.y = 0;
+		}
+
+		if (PlayerBottom > BlockTop && PlayerTop < BlockTop)    //Top side of the block
+		{
+			player.isJumping = false;
+			player.isOnGround = true;
+			player.entityRec.move(0, -player.velocity.y);
+			player.velocity.y = -35;
 		}
 	}
 }

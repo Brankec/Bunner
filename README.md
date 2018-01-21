@@ -22,6 +22,9 @@ Features:
 - projectiles(with sound)
 - ingame menu(the game is frozen until you exit the menu)
 
+- 2 levels
+- Bounce tiles
+
 
 Upcoming features:
 - ambient sound

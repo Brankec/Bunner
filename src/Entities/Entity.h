@@ -27,4 +27,6 @@ public:
 protected:
 	int currentHealth = 10;
 	int maxHealth = 10;
+	float stamina = 100;
+	bool isStaminaFull = true;
 };

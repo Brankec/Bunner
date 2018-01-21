@@ -81,8 +81,9 @@ void StatePlaying::render(sf::RenderTarget& renderer)
 		map.drawBackGround(renderer); //Background
 		map.drawBackGroundMain(renderer, player);
 		map.drawMain(renderer, player); //Main (player base)
-		map.drawForeGround(renderer); //Foreground
+		map.drawInteractives(renderer, player);
 		renderer.draw(player.entityRec); //player
+		map.drawForeGround(renderer); //Foreground
 		player.gun.draw(renderer); //projectiles
 		renderer.setView(renderer.getDefaultView()); //resets the view to default state
 

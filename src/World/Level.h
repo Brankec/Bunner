@@ -14,7 +14,9 @@ public:
 		BackGround = "Level 1/Start_background";
 		BackGroundMain = "Level 1/Start_backgroundMain";
 		Main = "Level 1/Start_main";
+		Interactable = "Level 1/Start_interactables";
 		ForeGround = "Level 1/Start_foreground";
+
 		gridSize = 6;
 		amountOfTilesX = 24;
 		tileSize = { 32, 32 };
@@ -40,7 +42,7 @@ public:
 
 	}
 
-	std::string BackGround, BackGroundMain, Main, ForeGround;
+	std::string BackGround, BackGroundMain, Main, ForeGround, Interactable;
 	int gridSize, amountOfTilesX;
 	sf::Vector2i tileSize;
 	int objectiveTileCoords;
