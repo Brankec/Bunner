@@ -3,7 +3,7 @@
 StatePlaying::StatePlaying(Game& game)
 :   StateBase   (game)
 {
-	map.loadMap("Map1_foreground", "Map1_main", "Map1_background", 6, 9, { 32,32 });
+	map.loadMap("Map1_background", "Map1_backgroundMain", "Map1_main", "Map1_foreground", 6, 9, { 32,32 });
 }
 
 void StatePlaying::handleEvent(sf::Event e)
@@ -42,15 +42,17 @@ void StatePlaying::update(sf::Time deltaTime)
 		if (player.isFinished) //for loading other maps
 		{
 			static int level = 1;
-			map.loadMap("Map" + std::to_string(level) + "_foreground", 
-				        "Map" + std::to_string(level) + "_main", 
-				        "Map" + std::to_string(level) + "_background", 
+			map.loadMap("Map" + std::to_string(1) + "_background", 
+				        "Map" + std::to_string(1) + "_backgroundMain",
+				        "Map" + std::to_string(1) + "_main", 
+				        "Map" + std::to_string(1) + "_foreground", 
 				        6, 9, { 32,32 });
-			if (level < 1)
+			if (level < 2)
 				level++;
 			else
 				level = 1;
 
+			player.entityRec.setPosition(30, -200);
 			player.isFinished = false;
 		}
 
@@ -72,6 +74,7 @@ void StatePlaying::render(sf::RenderTarget& renderer)
 {
 		renderer.setView(Camera::getView({ 10.f, 1.f })); //background scroll
 		map.drawBackGround(renderer); //Background
+		map.drawBackGroundMain(renderer, player);
 		map.drawMain(renderer, player); //Main (player base)
 		map.drawForeGround(renderer); //Foreground
 		renderer.draw(player.entityRec); //player

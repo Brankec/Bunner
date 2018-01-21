@@ -3,9 +3,10 @@
 
 Map::Map()
 {
+	setOriginCenter();
 }
 
-void Map::loadMap(std::string fileNameFore, std::string fileNameMain, std::string fileNameBack, int n, int amountOfTiles, sf::Vector2i tileSize)
+void Map::loadMap(std::string fileNameBack, std::string fileNameBackMain,  std::string fileNameMain, std::string fileNameFore, int n, int amountOfTiles, sf::Vector2i tileSize)
 {
 	if (openfileForeground.is_open())
 		openfileForeground.close();
@@ -13,23 +14,24 @@ void Map::loadMap(std::string fileNameFore, std::string fileNameMain, std::strin
 	if (openfileMain.is_open())
 		openfileMain.close();
 
+	if (openfileBackgroundMain.is_open())
+		openfileBackgroundMain.close();
+
 	if (openfileBackground.is_open())
 		openfileBackground.close();
 
-	reset[0] = true;
-	reset[1] = true;
-	reset[2] = true;
-
 	openfileForeground.open("res/Maps/" + fileNameFore + ".txt");
 	openfileMain.open("res/Maps/" + fileNameMain + ".txt");
+	openfileBackgroundMain.open("res/Maps/" + fileNameBackMain + ".txt");
 	openfileBackground.open("res/Maps/" + fileNameBack + ".txt");
 
-	this->powOfN = (int)pow(2, n);
+	this->powOfN = pow(2, n);
 	this->amountOfTiles = amountOfTiles;
 	this->tileSize = tileSize;
-	setOriginCenter();
+
 	loadTilesForeground();
 	loadTilesMain();
+	loadTilesBackgroundMain();
 	loadTilesBackground();
 }
 
@@ -48,11 +50,10 @@ void Map::loadTilesForeground()
 		openfileForeground >> tileLocation;
 
 		if (tileTexture.loadFromFile(tileLocation))
-			tile[2].setTexture(&tileTexture);
-		else
-			tile[2].setFillColor(sf::Color::Magenta);
+			tile[3].setTexture(&tileTexture);
 
-		tile[2].setSize(sf::Vector2f((float)powOfN, (float)powOfN));
+		tile[3].setSize(sf::Vector2f((float)powOfN, (float)powOfN));
+
 		while (openfileForeground.good())
 		{
 			openfileForeground >> tileIndex;
@@ -70,28 +71,30 @@ void Map::loadTilesForeground()
 }
 void Map::drawForeGround(sf::RenderTarget& renderer)
 {
+	if (mapForeGround.size() != 0)
+	{
+		float cam_x = Camera::getView().getCenter().x;
+		int cam_x_tile = cam_x / tile[3].getSize().x;
+		int Tile_row_width = (renderer.getSize().x + 1200) / mapForeGround[1].size();
+		float cam_y = Camera::getView().getCenter().y;
+		int cam_y_tile = cam_y / tile[3].getSize().y;
+		int Tile_column_height = renderer.getSize().y / mapForeGround.size();
 
-	float cam_x = Camera::getView().getCenter().x;
-	int cam_x_tile = cam_x / tile[2].getSize().x;
-	int Tile_row_width = (renderer.getSize().x + 1200) / mapForeGround[1].size();
-	float cam_y = Camera::getView().getCenter().y;
-	int cam_y_tile = cam_y / tile[2].getSize().y;
-	int Tile_column_height = renderer.getSize().y / mapForeGround.size();
+		int X_border_right = std::min((int)mapForeGround[1].size() - 1, cam_x_tile + Tile_row_width / 2);
+		int Y_border_right = std::min((int)mapForeGround.size(), cam_y_tile + Tile_column_height / 2);
 
-	int X_border_right = std::min((int)mapForeGround[1].size() - 1, cam_x_tile + Tile_row_width / 2);
-	int Y_border_right = std::min((int)mapForeGround.size(), cam_y_tile + Tile_column_height / 2);
-
-	for (int x = std::max(cam_x_tile - Tile_row_width / 2, 0); x < X_border_right; x++)
-		for (int y = std::max(cam_y_tile - Tile_column_height / 2, 0); y < Y_border_right; y++)
-		{
-			if (mapForeGround[y][x].x != -1 && mapForeGround[y][x].y != -1)
+		for (int x = std::max(cam_x_tile - Tile_row_width / 2, 0); x < X_border_right; x++)
+			for (int y = std::max(cam_y_tile - Tile_column_height / 2, 0); y < Y_border_right; y++)
 			{
-				tile[2].setPosition(x * (float)powOfN, y * (float)powOfN);
-				tile[2].setTextureRect(sf::IntRect(mapForeGround[y][x].x + 1, mapForeGround[y][x].y + 1, tileSize.x - 2, tileSize.y - 2));
+				if (mapForeGround[y][x].x != -1 && mapForeGround[y][x].y != -1)
+				{
+					tile[3].setPosition(x * (float)powOfN, y * (float)powOfN);
+					tile[3].setTextureRect(sf::IntRect(mapForeGround[y][x].x + 1, mapForeGround[y][x].y + 1, tileSize.x - 2, tileSize.y - 2));
 
-				renderer.draw(tile[2]);
+					renderer.draw(tile[3]);
+				}
 			}
-		}
+	}
 }
 
 
@@ -105,9 +108,9 @@ void Map::loadTilesMain()
 		openfileMain >> tileLocation;
 
 		if (tileTexture.loadFromFile(tileLocation))
-			tile[1].setTexture(&tileTexture);
+			tile[2].setTexture(&tileTexture);
 
-		tile[1].setSize(sf::Vector2f((float)powOfN, (float)powOfN));
+		tile[2].setSize(sf::Vector2f((float)powOfN, (float)powOfN));
 		while (openfileMain.good())
 		{
 			openfileMain >> tileIndex;
@@ -125,37 +128,100 @@ void Map::loadTilesMain()
 }
 void Map::drawMain(sf::RenderTarget & renderer, Player & player)
 {
+	if (mapMain.size() != 0)
+	{
+		float cam_x = Camera::getView().getCenter().x;
+		int cam_x_tile = cam_x / tile[2].getSize().x;
+		int Tile_row_width = (renderer.getSize().x + 1200) / mapMain[1].size();
+		float cam_y = Camera::getView().getCenter().y;
+		int cam_y_tile = cam_y / tile[2].getSize().y;
+		int Tile_column_height = renderer.getSize().y / mapMain.size();
 
-	float cam_x = Camera::getView().getCenter().x;
-	int cam_x_tile = cam_x / tile[1].getSize().x;
-	int Tile_row_width = (renderer.getSize().x + 1200) / mapMain[1].size();
-	float cam_y = Camera::getView().getCenter().y;
-	int cam_y_tile = cam_y / tile[1].getSize().y;
-	int Tile_column_height = renderer.getSize().y / mapMain.size();
+		int X_border_right = std::min((int)mapMain[1].size() - 1, cam_x_tile + Tile_row_width / 2);
+		int Y_border_right = std::min((int)mapMain.size(), cam_y_tile + Tile_column_height / 2);
 
-	int X_border_right = std::min((int)mapMain[1].size() - 1, cam_x_tile + Tile_row_width / 2);
-	int Y_border_right = std::min((int)mapMain.size(), cam_y_tile + Tile_column_height / 2);
-
-	for (int x = std::max(cam_x_tile - Tile_row_width / 2, 0); x < X_border_right; x++)
-		for (int y = std::max(cam_y_tile - Tile_column_height / 2, 0); y < Y_border_right; y++)
-		{
-			if (mapMain[y][x].x != -1 && mapMain[y][x].y != -1)
+		for (int x = std::max(cam_x_tile - Tile_row_width / 2, 0); x < X_border_right; x++)
+			for (int y = std::max(cam_y_tile - Tile_column_height / 2, 0); y < Y_border_right; y++)
 			{
-				tile[1].setPosition(x * (float)powOfN, y * (float)powOfN);
-				tile[1].setTextureRect(sf::IntRect(mapMain[y][x].x + 1, mapMain[y][x].y + 1, tileSize.x - 2, tileSize.y - 2));
+				if (mapMain[y][x].x != -1 && mapMain[y][x].y != -1)
+				{
+					tile[2].setPosition(x * (float)powOfN, y * (float)powOfN);
+					tile[2].setTextureRect(sf::IntRect(mapMain[y][x].x + 1, mapMain[y][x].y + 1, tileSize.x - 2, tileSize.y - 2));
 
-				if(mapMain[y][x].y == 0 && mapMain[y][x].x == 256) //objective tile
-				Objective(player);
-				else
-				Collision(player);
-				
-					
+					if (mapMain[y][x].y == 0 && mapMain[y][x].x == 256) //objective tile
+						Objective(player);
+					else
+						Collision(player);
 
-				ProjectileCollision(player);
 
-				renderer.draw(tile[1]);
+
+					ProjectileCollision(player);
+
+					renderer.draw(tile[2]);
+				}
 			}
+	}
+}
+
+void Map::loadTilesBackgroundMain()
+{
+	mapBackGroundMain.clear();
+
+	if (openfileBackgroundMain.is_open())
+	{
+		std::string tileLocation;
+		openfileBackgroundMain >> tileLocation;
+
+		if (tileTexture.loadFromFile(tileLocation))
+			tile[1].setTexture(&tileTexture);
+
+		tile[1].setSize(sf::Vector2f((float)powOfN, (float)powOfN));
+		while (openfileBackgroundMain.good())
+		{
+			openfileBackgroundMain >> tileIndex;
+			if (tileIndex != ',')
+				tempMap.push_back(Sprite_sheet_coordinates(tileIndex - 1)); //the indices will always be for 1 less inside the code(so 0 is actually -1 and 1 is actually 0)
+
+			if (openfileBackgroundMain.peek() == '\n')
+			{
+				mapBackGroundMain.push_back(tempMap);
+				tempMap.clear();
+			}
+
 		}
+	}
+}
+void Map::drawBackGroundMain(sf::RenderTarget & renderer, Player & player)
+{
+	if (mapBackGroundMain.size() != 0)
+	{
+		float cam_x = Camera::getView().getCenter().x;
+		int cam_x_tile = cam_x / tile[1].getSize().x;
+		int Tile_row_width = (renderer.getSize().x + 1200) / mapBackGroundMain[1].size();
+		float cam_y = Camera::getView().getCenter().y;
+		int cam_y_tile = cam_y / tile[1].getSize().y;
+		int Tile_column_height = renderer.getSize().y / mapBackGroundMain.size();
+
+		int X_border_right = std::min((int)mapBackGroundMain[1].size() - 1, cam_x_tile + Tile_row_width / 2);
+		int Y_border_right = std::min((int)mapBackGroundMain.size(), cam_y_tile + Tile_column_height / 2);
+
+		for (int x = std::max(cam_x_tile - Tile_row_width / 2, 0); x < X_border_right; x++)
+			for (int y = std::max(cam_y_tile - Tile_column_height / 2, 0); y < Y_border_right; y++)
+			{
+				if (mapBackGroundMain[y][x].x != -1 && mapBackGroundMain[y][x].y != -1)
+				{
+					tile[1].setPosition(x * (float)powOfN, y * (float)powOfN);
+					tile[1].setTextureRect(sf::IntRect(mapBackGroundMain[y][x].x + 1, mapBackGroundMain[y][x].y + 1, tileSize.x - 2, tileSize.y - 2));
+
+					if (mapBackGroundMain[y][x].y == 0 && mapBackGroundMain[y][x].x == 0 ||
+						mapBackGroundMain[y][x].y == 0 && mapBackGroundMain[y][x].x == 32 ||
+						mapBackGroundMain[y][x].y == 0 && mapBackGroundMain[y][x].x == 64) //collision tiles
+					CollisionTopOnly(player);
+
+					renderer.draw(tile[1]);
+				}
+			}
+	}
 }
 
 
@@ -189,28 +255,30 @@ void Map::loadTilesBackground()
 }
 void Map::drawBackGround(sf::RenderTarget & renderer)
 {
+	if (mapBackGround.size() != 0)
+	{
+		float cam_x = Camera::getView().getCenter().x;
+		int cam_x_tile = cam_x / tile[0].getSize().x;
+		int Tile_row_width = (renderer.getSize().x + 1200) / mapBackGround[1].size();
+		float cam_y = Camera::getView().getCenter().y;
+		int cam_y_tile = cam_y / tile[0].getSize().y;
+		int Tile_column_height = renderer.getSize().y / mapBackGround.size();
 
-	float cam_x = Camera::getView().getCenter().x;
-	int cam_x_tile = cam_x / tile[0].getSize().x;
-	int Tile_row_width = (renderer.getSize().x + 1200) / mapBackGround[1].size();
-	float cam_y = Camera::getView().getCenter().y;
-	int cam_y_tile = cam_y / tile[0].getSize().y;
-	int Tile_column_height = renderer.getSize().y / mapBackGround.size();
+		int X_border_right = std::min((int)mapBackGround[1].size() - 1, cam_x_tile + Tile_row_width / 2);
+		int Y_border_right = std::min((int)mapBackGround.size(), cam_y_tile + Tile_column_height / 2);
 
-	int X_border_right = std::min((int)mapBackGround[1].size() - 1, cam_x_tile + Tile_row_width / 2);
-	int Y_border_right = std::min((int)mapBackGround.size(), cam_y_tile + Tile_column_height / 2);
-
-	for (int x = std::max(cam_x_tile - Tile_row_width / 2, 0); x < X_border_right; x++)
-		for (int y = std::max(cam_y_tile - Tile_column_height / 2, 0); y < Y_border_right; y++)
-		{
-			if (mapBackGround[y][x].x != -1 && mapBackGround[y][x].y != -1)
+		for (int x = std::max(cam_x_tile - Tile_row_width / 2, 0); x < X_border_right; x++)
+			for (int y = std::max(cam_y_tile - Tile_column_height / 2, 0); y < Y_border_right; y++)
 			{
-				tile[0].setPosition(x * (float)powOfN, y * (float)powOfN);
-				tile[0].setTextureRect(sf::IntRect(mapBackGround[y][x].x + 1, mapBackGround[y][x].y + 1, tileSize.x - 2, tileSize.y - 2));
+				if (mapBackGround[y][x].x != -1 && mapBackGround[y][x].y != -1)
+				{
+					tile[0].setPosition(x * (float)powOfN, y * (float)powOfN);
+					tile[0].setTextureRect(sf::IntRect(mapBackGround[y][x].x + 1, mapBackGround[y][x].y + 1, tileSize.x - 2, tileSize.y - 2));
 
-				renderer.draw(tile[0]);
+					renderer.draw(tile[0]);
+				}
 			}
-		}
+	}
 }
 
 
@@ -237,10 +305,10 @@ void Map::Collision(Player &player)
 	float PlayerTop = player.entityRec.getPosition().y - player.getAABB().height / 2;
 	float PlayerBottom = player.entityRec.getPosition().y + player.getAABB().height / 2;
 
-	float BlockLeft = tile[1].getPosition().x;
-	float BlockRight = tile[1].getPosition().x + tile[1].getSize().x;
-	float BlockTop = tile[1].getPosition().y;
-	float BlockBottom = tile[1].getPosition().y + tile[1].getSize().y;
+	float BlockLeft = tile[2].getPosition().x;
+	float BlockRight = tile[2].getPosition().x + tile[2].getSize().x;
+	float BlockTop = tile[2].getPosition().y;
+	float BlockBottom = tile[2].getPosition().y + tile[2].getSize().y;
 
 	if (PlayerRight > BlockLeft - 10 && 
 		PlayerLeft < BlockRight + 10 && 
@@ -273,6 +341,33 @@ void Map::Collision(Player &player)
 		}
 
 		if (PlayerBottom > BlockTop && PlayerTop < BlockTop)    //Top side of the block
+		{
+			player.isJumping = false;
+			player.isOnGround = true;
+			player.entityRec.move(0, -player.velocity.y);
+			player.velocity.y = 0;
+		}
+	}
+}
+
+void Map::CollisionTopOnly(Player & player)
+{
+	float PlayerLeft = player.entityRec.getPosition().x - player.getAABB().width / 2;
+	float PlayerRight = player.entityRec.getPosition().x + player.getAABB().width / 2;
+	float PlayerTop = player.entityRec.getPosition().y - player.getAABB().height / 2;
+	float PlayerBottom = player.entityRec.getPosition().y + player.getAABB().height / 2;
+
+	float BlockLeft = tile[1].getPosition().x;
+	float BlockRight = tile[1].getPosition().x + tile[1].getSize().x;
+	float BlockTop = tile[1].getPosition().y;
+	float BlockBottom = tile[1].getPosition().y + tile[1].getSize().y;
+
+	if (PlayerRight > BlockLeft &&
+		PlayerLeft < BlockRight &&
+		PlayerBottom > BlockTop - 10 &&
+		PlayerTop < BlockBottom)
+	{
+		if (PlayerBottom > BlockTop && PlayerTop < BlockTop -9 && player.velocity.y > 0)    //Top side of the block
 		{
 			player.isJumping = false;
 			player.isOnGround = true;

@@ -16,13 +16,18 @@ public:
 	Map();
 
 public:
-	void loadMap(std::string fileNameFore, std::string fileNameMain, std::string fileNameBack, int n, int amountOfTiles, sf::Vector2i tileSize);
+	void loadMap(std::string fileNameBack, std::string fileNameBackMain, std::string fileNameMain, std::string fileNameFore, int n, int amountOfTiles, sf::Vector2i tileSize);
 
-	void loadTilesForeground();
+	void loadTilesForeground();//for deocrations
 	void drawForeGround(sf::RenderTarget& renderer);
-	void loadTilesMain();
+
+	void loadTilesMain();//main player layer with all 4 collisions
 	void drawMain(sf::RenderTarget& renderer, Player& player);
-	void loadTilesBackground();
+
+	void loadTilesBackgroundMain();//player background top collision
+	void drawBackGroundMain(sf::RenderTarget & renderer, Player & player);
+
+	void loadTilesBackground();//for decorations
 	void drawBackGround(sf::RenderTarget& renderer);
 
 
@@ -34,23 +39,22 @@ public:
 	int powOfN;
 	int tileIndex = 0;
 	sf::Texture tileTexture;
-	sf::RectangleShape tile[3];  // 0) background, 1) main(playerbase, 2) foreground
+	sf::RectangleShape tile[4];  // 0) background, 1) background-main(only top has collision), 2) main(playerbase), 3) foreground
 
-	std::vector<std::vector<sf::Vector2i>> mapForeGround, mapBackGround, mapMain;
+	std::vector<std::vector<sf::Vector2i>> mapForeGround, mapBackGround, mapMain, mapBackGroundMain;
 	std::vector<sf::Vector2i> tempMap;
 	sf::Vector2i loadCounter;
 	sf::Vector2i tileSize;
 	int amountOfTiles;
 	void Collision(Player &player);
+	void CollisionTopOnly(Player &player);
 	void Objective(Player &player);
 	void ProjectileCollision(Player &player);
 
 	//open the file containing the tile name and tile positions
 	std::ifstream openfileForeground;
 	std::ifstream openfileMain;
+	std::ifstream openfileBackgroundMain;
 	std::ifstream openfileBackground;
-
-private:
-	bool reset[3] = { false, false, false };
 };
 
