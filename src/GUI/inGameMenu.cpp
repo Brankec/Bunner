@@ -1,9 +1,9 @@
-#include "Menu.h"
+#include "inGameMenu.h"
 
 
 
-Menu::Menu()
-	: ExitButton({ 750,300 }, "ExitButton")
+inGameMenu::inGameMenu()
+	: ExitButton({ 750,600 }, "ExitButton")
 	, RestartButton({ 750,400 }, "RestartButton")
 {
 	MenuBackground.setSize({ 1500,900 });
@@ -13,25 +13,25 @@ Menu::Menu()
 	MenuBackground.setTexture(&menuTex);
 }
 
-void Menu::buttonPress(sf::Event e)
+void inGameMenu::buttonPress(sf::Event e)
 {
 	ExitButton.isButtonPressed({(float)e.mouseButton.x, (float)e.mouseButton.y, 1, 1}, e);
 	RestartButton.isButtonPressed({ (float)e.mouseButton.x, (float)e.mouseButton.y, 1, 1 }, e);
 }
 
-void Menu::ButtonUpdate(Player& player)
+void inGameMenu::ButtonUpdate(Player& player, bool & shouldPop)
 {
-	ExitWindow();
+	ExitWindow(shouldPop);
 	RestartGame(player);
 }
-void Menu::ExitWindow()
+void inGameMenu::ExitWindow(bool & shouldPop)
 {
 	if (ExitButton.buttonPressed == true)
 	{
-		exit(-1);
+		shouldPop = true;
 	}
 }
-void Menu::RestartGame(Player& player)
+void inGameMenu::RestartGame(Player& player)
 {
 	if (RestartButton.buttonPressed == true)
 	{
@@ -45,7 +45,7 @@ void Menu::RestartGame(Player& player)
 
 
 
-void Menu::renderMenu(sf::RenderTarget& renderer)
+void inGameMenu::renderMenu(sf::RenderTarget& renderer)
 {
 	renderer.draw(MenuBackground);
 	renderer.draw(ExitButton.buttonRec);

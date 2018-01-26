@@ -5,12 +5,12 @@
 #include "../Entities/Player.h"
 #include "../Util/Camera.h"
 #include "../World/Map.h"
-#include "../GUI/Menu.h"
+#include "../GUI/inGameMenu.h"
 #include "../World/Level.h"
 
 class StatePlaying
 	: public StateBase
-	, public Menu
+	, public inGameMenu
 {
  public:
 	 StatePlaying(Game& game);
@@ -21,12 +21,16 @@ class StatePlaying
      void fixedUpdate    (sf::Time deltaTime)            override;
      void render         (sf::RenderTarget& renderer)    override;
 
+	 void pushState(bool*m_shouldPush)          override;
+	 void popState(bool & shouldPop)                 override;
+
 private:
 	int nextLevel = 1;
 	Level levels;
 	Player player;
 	Map map;
 	bool openMenu = false;
+	bool* shouldPop;
 };
 
 #endif // STATEPLAYING_H_INCLUDED

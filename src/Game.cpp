@@ -1,12 +1,15 @@
 #include "Game.h"
 
-#include "States\StatePlaying.h"
+#include "States/StatePlaying.h"
+#include "States/StateMenu.h"
 
 Game::Game()
 :   m_window    ({1500, 900}, "Bunner")
 {
     m_window.setFramerateLimit(100);
-    pushState<StatePlaying>(*this);
+
+	pushState<StateMenu>(*this); //game menu. Other states get pushed/popped from this point
+
 }
 
 void Game::run()
@@ -49,18 +52,31 @@ void Game::run()
         counter.draw(m_window);
         m_window.display();
 
-
         //Handle window events
         handleEvent();
+
+		//Handle states in other states(push or pop)
+		state.pushState(m_shouldPush);
+		state.popState(m_shouldPop);
+
+		//push state
+		if (m_shouldPush[0])
+		{
+			pushState<StatePlaying>(*this);
+			m_shouldPush[0] = false;
+		}
+
+		//pop a state
         tryPop();
     }
 }
-
+//game loader (change) MainMenu (push) level loader (push) playing level (pop) level loader
 void Game::tryPop()
 {
     if (m_shouldPop)
     {
-        m_states.pop_back();
+        m_states.pop();
+		m_shouldPop = false;
     }
 }
 
@@ -71,18 +87,18 @@ void Game::handleEvent()
     while (m_window.pollEvent(e))
     {
         getCurrentState().handleEvent(e);
-        switch (e.type)
-        {
-            case sf::Event::Closed:
-                m_window.close();
-                break;
-        }
-    }
+		switch (e.type)
+		{
+		case sf::Event::Closed:
+			m_window.close();
+			break;
+		}
+	}
 }
 
 StateBase& Game::getCurrentState()
 {
-    return *m_states.back();
+    return *m_states.top();
 }
 
 void Game::popState()

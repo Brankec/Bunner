@@ -143,7 +143,7 @@ void Map::drawInteractives(sf::RenderTarget& renderer, Player &player)
 		int Tile_row_width = (renderer.getView().getSize().x + 2000) / mapInteractables[1].size();
 		float cam_y = Camera::getView().getCenter().y;
 		int cam_y_tile = cam_y / tile[4].getSize().y;
-		int Tile_column_height = (renderer.getView().getSize().y) / mapInteractables.size();
+		int Tile_column_height = (renderer.getView().getSize().y) + 100 / mapInteractables.size();
 
 		int X_border_right = std::min((int)mapInteractables[1].size(), cam_x_tile + Tile_row_width / 2);
 		int Y_border_right = std::min((int)mapInteractables.size(), cam_y_tile + Tile_column_height / 2);
@@ -181,16 +181,18 @@ void Map::loadTilesMain()
 		tile[2].setSize(sf::Vector2f((float)powOfN, (float)powOfN));
 		while (openfileMain.good())
 		{
+
 			openfileMain >> tileIndex;
 			if (tileIndex != ',')
+			{
 				tempMap.push_back(Sprite_sheet_coordinates(tileIndex - 1)); //the indices will always be for 1 less inside the code(so 0 is actually -1 and 1 is actually 0)
 
-			if (openfileMain.peek() == '\n')
-			{
-				mapMain.push_back(tempMap);
-				tempMap.clear();
+				if (openfileMain.peek() == '\n')
+				{
+					mapMain.push_back(tempMap);
+					tempMap.clear();
+				}
 			}
-
 		}
 	}
 }
@@ -203,7 +205,7 @@ void Map::drawMain(sf::RenderTarget & renderer, Player & player)
 		int Tile_row_width = (renderer.getView().getSize().x + 2000) / mapMain[1].size();
 		float cam_y = Camera::getView().getCenter().y;
 		int cam_y_tile = cam_y / tile[2].getSize().y;
-		int Tile_column_height = (renderer.getView().getSize().y + 300) / mapMain.size();
+		int Tile_column_height = (renderer.getView().getSize().y) + 100 / mapMain.size();
 
 		int X_border_right = std::min((int)mapMain[1].size(), cam_x_tile + Tile_row_width / 2);
 		int Y_border_right = std::min((int)mapMain.size(), cam_y_tile + Tile_column_height / 2);
@@ -268,7 +270,7 @@ void Map::drawBackGroundMain(sf::RenderTarget & renderer, Player & player)
 		int Tile_row_width = (renderer.getView().getSize().x + 2000) / mapBackGroundMain[1].size();
 		float cam_y = Camera::getView().getCenter().y;
 		int cam_y_tile = cam_y / tile[1].getSize().y;
-		int Tile_column_height = (renderer.getView().getSize().y) / mapBackGroundMain.size();
+		int Tile_column_height = (renderer.getView().getSize().y) + 100 / mapBackGroundMain.size();
 
 		int X_border_right = std::min((int)mapBackGroundMain[1].size(), cam_x_tile + Tile_row_width / 2);
 		int Y_border_right = std::min((int)mapBackGroundMain.size(), cam_y_tile + Tile_column_height / 2);
@@ -511,8 +513,9 @@ void Map::Bounce(Player & player)
 		{
 			player.isJumping = false;
 			player.isOnGround = true;
-			player.entityRec.move(0, -player.velocity.y);
-			player.velocity.y = -35;
+			player.entityRec.move(player.velocity.x * 2, -player.velocity.y);
+			player.velocity.y = -25;
+
 		}
 	}
 }

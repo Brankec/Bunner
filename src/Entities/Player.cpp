@@ -72,7 +72,7 @@ void Player::setPos()
 		entityRec.setPosition(900, 150);
 	}*/
 
-	if (velocity.y < 10)
+	if (velocity.y < 20)
 		velocity.y += gravity;
 
 	entityRec.move(velocity.x, velocity.y);
@@ -96,11 +96,14 @@ void Player::playerControl()
 		{
 			if (frameDelay > 0.25f / abs(velocity.x))
 			{
-				if (isOnGround)
+				frameDelay = 0;
+
+				if (isOnGround &&
+					(frameStage.x == 0 ||
+						frameStage.x == 4))
 					walkingSound.playSound(20);
 
 				frameStage.x++;
-				frameDelay = 0;
 			}
 		}
 		else
@@ -116,11 +119,14 @@ void Player::playerControl()
 		{
 			if (frameDelay > 0.25f / abs(velocity.x))
 			{
-				if (isOnGround)
+				frameDelay = 0;
+
+				if (isOnGround &&
+					(frameStage.x == 0 ||
+						frameStage.x == 4))
 					walkingSound.playSound(20);
 
 				frameStage.x++;
-				frameDelay = 0;
 			}
 		}
 		else
@@ -143,8 +149,8 @@ void Player::playerControl()
 	}
 
 	//Sprint
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift) && isStaminaFull) 
-	{ 
+	/*if (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift) && isStaminaFull)   //not sure if this will be in the game
+	{  
 		if (stamina < 1)
 			isStaminaFull = false;
 
@@ -158,7 +164,7 @@ void Player::playerControl()
 
 		stamina += 0.3;
 		speedMAX = 3; 
-	}
+	}*/
 
 	//fire
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::LControl))

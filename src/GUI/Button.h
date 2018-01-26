@@ -1,5 +1,5 @@
 #include <SFML/Graphics.hpp>
-#pragma
+#pragma once
 
 class Button
 {

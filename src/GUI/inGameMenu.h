@@ -1,18 +1,19 @@
+#pragma once
 #include <SFML/Graphics.hpp>
 #include "Button.h"
 #include "../Entities/Player.h"
 
-#pragma once
-class Menu
+
+class inGameMenu
 {
 public:
-	Menu();
+	inGameMenu();
 
 protected:
 	void buttonPress(sf::Event e);
 
-	void ButtonUpdate(Player& player);
-	void ExitWindow();
+	void ButtonUpdate(Player& player, bool & shouldPop);
+	void ExitWindow(bool & shouldPop);
 	void RestartGame(Player& player);
 
 	void renderMenu(sf::RenderTarget& renderer);

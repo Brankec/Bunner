@@ -14,8 +14,6 @@ public:
 
 	void isSoundOver();
 
-	float timer = 0.2, delay = 0.2;
-
 protected:
 	sf::SoundBuffer soundBuffer;
 

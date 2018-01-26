@@ -3,7 +3,6 @@
 StatePlaying::StatePlaying(Game& game)
 :   StateBase   (game)
 {
-	Camera::view.zoom(1.4f);
 	map.loadMap(levels);
 }
 
@@ -66,7 +65,7 @@ void StatePlaying::update(sf::Time deltaTime)
 	}
 	else
 	{
-		ButtonUpdate(player); //updates the button function
+		ButtonUpdate(player, *shouldPop); //updates the button function
 	}
 }
 
@@ -79,7 +78,7 @@ void StatePlaying::render(sf::RenderTarget& renderer)
 {
 		renderer.setView(Camera::getView({ 10.f, 1.f })); //background scroll
 		map.drawBackGround(renderer); //Background
-		map.drawBackGroundMain(renderer, player);
+		map.drawBackGroundMain(renderer, player); //background tiles with only top collision
 		map.drawMain(renderer, player); //Main (player base)
 		map.drawInteractives(renderer, player);
 		renderer.draw(player.entityRec); //player
@@ -89,4 +88,13 @@ void StatePlaying::render(sf::RenderTarget& renderer)
 
 		if (openMenu)
 			renderMenu(renderer);
+}
+
+void StatePlaying::pushState(bool*m_shouldPush)
+{
+}
+
+void StatePlaying::popState(bool & shouldPop)
+{
+	this->shouldPop = &shouldPop;
 }

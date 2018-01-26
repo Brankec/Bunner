@@ -2,7 +2,7 @@
 #define GAME_H_INCLUDED
 
 #include <memory>
-#include <vector>
+#include <stack>
 #include <SFML/Graphics.hpp>
 
 #include "Util/FPSCounter.h"
@@ -29,18 +29,18 @@ private:
 	StateBase& getCurrentState();
 
 	sf::RenderWindow m_window;
-	std::vector<std::unique_ptr<StateBase>> m_states;
+	std::stack<std::unique_ptr<StateBase>> m_states;
 
 	FPSCounter counter;
 
 	bool m_shouldPop = false;
-
+	bool m_shouldPush[2] = { false, false }; //0) playing state, 1) ingame menu state
 };
 
 template<typename T, typename... Args>
 void Game::pushState(Args&&... args)
 {
-	m_states.push_back(std::make_unique<T>(std::forward<Args>(args)...));
+	m_states.push(std::make_unique<T>(std::forward<Args>(args)...));
 }
 
 #endif // GAME_H_INCLUDED

@@ -9,16 +9,11 @@ PlayEntitySound::PlayEntitySound()
 
 void PlayEntitySound::playSound(int volume)
 {
-	if (timer > delay)
-	{
-		entitySound.emplace_back(soundBuffer, volume);
-		timer = 0;
-	}
+	entitySound.emplace_back(soundBuffer, volume);
 }
 
 void PlayEntitySound::update(float deltaTime)
 {
-	timer += deltaTime;
 	isSoundOver();
 }
 
