@@ -22,6 +22,8 @@ public:
 		tileSize = { 32, 32 };
 		objectiveTileCoords = 736;
 		whichLevel = 1;
+
+		spawnPoint = { 30, 100 };
 	}
 
 	void Level_2()
@@ -35,6 +37,8 @@ public:
 		tileSize = { 32, 32 };
 		objectiveTileCoords = 256;
 		whichLevel = 2;
+
+		spawnPoint = { 30, 100 };
 	}
 
 	void Level_3()
@@ -47,4 +51,5 @@ public:
 	sf::Vector2i tileSize;
 	int objectiveTileCoords;
 	int whichLevel = 0;
+	sf::Vector2f spawnPoint;
 };

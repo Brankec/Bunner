@@ -16,7 +16,7 @@ Player::Player()
 	speedMAX = 3;
 	stamina = 100;
 
-	//gravity = 0.1;
+	//gravity = 0.4;
 }
 
 void Player::loadPlayerAnimation()
@@ -66,11 +66,6 @@ void Player::playerUpdate(float deltaTime)
 
 void Player::setPos()
 {
-	/*if (getPos().y > 2000)
-	{
-		velocity.y = 0;
-		entityRec.setPosition(900, 150);
-	}*/
 
 	if (velocity.y < 20)
 		velocity.y += gravity;
@@ -88,57 +83,68 @@ void Player::playerControl()
 	//X axis
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
 	{
-		velocity.x = Lerp(velocity.x, speedMAX, 0.05f); //1) current speed ,2) max speed, 3)acceleration speed
-		entityRec.setScale(1, 1); //for turning right
-		Angle = 90;
-
-		if (frameStage.x < 10)
+		//if (isOnGround)
 		{
-			if (frameDelay > 0.25f / abs(velocity.x))
+			velocity.x = Lerp(velocity.x, speedMAX, 0.05f); //1) current speed ,2) max speed, 3)acceleration speed
+
+			entityRec.setScale(1, 1); //for turning right
+			Angle = 90;
+
+			if (frameStage.x < 10)
 			{
-				frameDelay = 0;
+				if (frameDelay > 0.25f / abs(velocity.x))
+				{
+					frameDelay = 0;
 
-				if (isOnGround &&
-					(frameStage.x == 0 ||
-						frameStage.x == 4))
-					walkingSound.playSound(20);
+					if (isOnGround &&
+						(frameStage.x == 0 ||
+							frameStage.x == 5))
+						walkingSound.playSound(20);
 
-				frameStage.x++;
+					frameStage.x++;
+				}
 			}
+			else
+				frameStage.x = 0;
 		}
-		else
-			frameStage.x = 0;
 	}
 	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
 	{
-		velocity.x = Lerp(velocity.x, -speedMAX, 0.05f);
-		entityRec.setScale(-1, 1); //for turning left
-		Angle = -90;
-
-		if (frameStage.x < 10)
+		//if (isOnGround)
 		{
-			if (frameDelay > 0.25f / abs(velocity.x))
+			velocity.x = Lerp(velocity.x, -speedMAX, 0.05f);
+
+			entityRec.setScale(-1, 1); //for turning left
+			Angle = -90;
+
+			if (frameStage.x < 10)
 			{
-				frameDelay = 0;
+				if (frameDelay > 0.25f / abs(velocity.x))
+				{
+					frameDelay = 0;
 
-				if (isOnGround &&
-					(frameStage.x == 0 ||
-						frameStage.x == 4))
-					walkingSound.playSound(20);
+					if (isOnGround &&
+						(frameStage.x == 0 ||
+							frameStage.x == 5))
+						walkingSound.playSound(20);
 
-				frameStage.x++;
+					frameStage.x++;
+				}
 			}
+			else
+				frameStage.x = 0;
 		}
-		else
-			frameStage.x = 0;
 	}
 	else
 	{
-		frameStage.x = 0;
-		velocity.x = Lerp(velocity.x, 0, 0.1f);
+		if (isOnGround)
+		{
+			frameStage.x = 0;
+			velocity.x = Lerp(velocity.x, 0, 0.1f);
 
-		if(abs(velocity.x) < 0.3f)
-			velocity.x = round(velocity.x);
+			if (abs(velocity.x) < 0.3f)
+				velocity.x = round(velocity.x);
+		}
 	}
 
 	//Y axis
@@ -149,7 +155,7 @@ void Player::playerControl()
 	}
 
 	//Sprint
-	/*if (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift) && isStaminaFull)   //not sure if this will be in the game
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift) && isStaminaFull)   //not sure if this will be in the game
 	{  
 		if (stamina < 1)
 			isStaminaFull = false;
@@ -164,7 +170,7 @@ void Player::playerControl()
 
 		stamina += 0.3;
 		speedMAX = 3; 
-	}*/
+	}
 
 	//fire
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::LControl))

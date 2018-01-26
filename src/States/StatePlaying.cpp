@@ -56,7 +56,7 @@ void StatePlaying::update(sf::Time deltaTime)
 
 			map.loadMap(levels);
 
-			player.entityRec.setPosition(30, -200);
+			player.entityRec.setPosition(levels.spawnPoint);
 			player.isFinished = false;
 		}
 

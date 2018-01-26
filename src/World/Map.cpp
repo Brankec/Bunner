@@ -513,8 +513,9 @@ void Map::Bounce(Player & player)
 		{
 			player.isJumping = false;
 			player.isOnGround = true;
-			player.entityRec.move(player.velocity.x * 2, -player.velocity.y);
+			player.entityRec.move(0, -player.velocity.y);
 			player.velocity.y = -25;
+			player.velocity.x *= 2;
 
 		}
 	}
