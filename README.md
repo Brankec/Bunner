@@ -1,6 +1,6 @@
 # Bunner
 
-***THIS PROJECT HAS BEEN ABANDONED AND USED FOR MY SUPER MARIO BROS CLONE PROJECT.***
+***THIS PROJECT HAS BEEN ABANDONED.***
 
 A generic 2D platformer that I'm working on as a project.
 
