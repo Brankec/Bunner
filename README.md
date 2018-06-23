@@ -1,8 +1,8 @@
 # Bunner
 
-***THIS PROJECT HAS BEEN ABANDONED.***
+***THIS PROJECT IS NO LONGER IN PRODUCTION.***
 
-A generic 2D platformer that I'm working on as a project.
+A generic 2D runner.
 
 Controls:
 - A - left
@@ -28,10 +28,4 @@ Features:
 - Bounce tiles
 
 
-Upcoming features:
-- ambient sound
-
-
-Possible features:
-- z depth drawing instead of painter algorithm drawing
-- particle effects
+***The goal of this project was to learn how to create an object with collision, animation, camera tracking, sound and optimization  for rendering the map. PLEASE NOTE THAT - All the assets used here are not mine!***
